@@ -259,6 +259,8 @@ tr.even {
 }
 span.filterColumn
 {
+    display:block;
+    width:200px;
 }
 tfoot input, tfoot select {
 	margin: 0.5em 0;

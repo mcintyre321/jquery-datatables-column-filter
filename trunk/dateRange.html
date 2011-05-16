@@ -33,8 +33,8 @@ $(document).ready(function(){
 	} )
 		  .columnFilter({ sPlaceHolder: "head:before",
 			aoColumns: [ { type: "text" },
-				     { type: "date-range" },
-                                     { type: "date-range" }
+				     { type: "date-range", sRangeFormat: "Between {from} and {to} dates" },
+                                     { type: "date-range", sRangeFormat: "Between {from} and {to}"  }
 				]
 
 		});

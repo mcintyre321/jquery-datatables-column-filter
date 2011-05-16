@@ -16,6 +16,7 @@
 * @sPlaceHolder                 String      Place where inline filtering function should be place ("tfoot", "thead"). Default is "tfoot"
 * @sRangeSeparator              String      Separatot that will be used when range values are sent to the server-side. Default value is "~".
 * @iFilteringDelay              int         TODO: Delay that will be set between the filtering requests. Default is 250.
+* @sRangeFormat                 string      Default format of the From ... to ... range inputs. Default is From {from} to {to}
 * @aoColumns                    Array       Array of the filter settings that will be applied on the columns
 
 http://www.datatables.net/plug-ins/filtering
@@ -25,11 +26,13 @@ http://www.datatables.net/plug-ins/filtering
 
 
 
-   
+
 
 
     var asInitVals, i, label, th;
 
+    var sTableId = "table";
+    var sRangeFormat = "From {from} to {to}";
     //Array of the functions that will override sSearch_ parameters
     var afnSearch_ = new Array();
     var aiCustomSearch_Indexes = new Array();
@@ -43,7 +46,10 @@ http://www.datatables.net/plug-ins/filtering
             sCSSClass = "number_filter";
         var input = $('<input type="text" class="search_init ' + sCSSClass + '" value="' + label + '"/>');
         th.html(input);
-        th.wrapInner('<span class="filterColumn" />');
+        if (bIsNumber)
+            th.wrapInner('<span class="filter_column filter_number" />');
+        else
+            th.wrapInner('<span class="filter_column filter_text" />');
         asInitVals[i] = label;
         var index = i;
 
@@ -75,15 +81,16 @@ http://www.datatables.net/plug-ins/filtering
 
     function fnCreateRangeInput() {
 
-        th.html('From');
-        var sFromId = 'range_from_' + i;
+        th.html(_fnRangeLabelPart(0));
+        var sFromId = sTableId + 'range_from_' + i;
         var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
         th.append(from);
-        th.append(' to ');
-        var sToId = 'range_to_' + i;
+        th.append(_fnRangeLabelPart(1));
+        var sToId = sTableId + 'range_to_' + i;
         var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
         th.append(to);
-        th.wrapInner('<span class="filterColumn" />');
+        th.append(_fnRangeLabelPart(2));
+        th.wrapInner('<span class="filterColumn filter_number_range" />');
         var index = i;
         aiCustomSearch_Indexes.push(i);
 
@@ -99,17 +106,17 @@ http://www.datatables.net/plug-ins/filtering
 	        function (oSettings, aData, iDataIndex) {
 	            var iMin = document.getElementById(sFromId).value * 1;
 	            var iMax = document.getElementById(sToId).value * 1;
-	            var iVersion = aData[index] == "-" ? 0 : aData[index] * 1;
+	            var iValue = aData[index] == "-" ? 0 : aData[index] * 1;
 	            if (iMin == "" && iMax == "") {
 	                return true;
 	            }
-	            else if (iMin == "" && iVersion < iMax) {
+	            else if (iMin == "" && iValue < iMax) {
 	                return true;
 	            }
-	            else if (iMin < iVersion && "" == iMax) {
+	            else if (iMin < iValue && "" == iMax) {
 	                return true;
 	            }
-	            else if (iMin < iVersion && iVersion < iMax) {
+	            else if (iMin < iValue && iValue < iMax) {
 	                return true;
 	            }
 	            return false;
@@ -136,16 +143,17 @@ http://www.datatables.net/plug-ins/filtering
 
     function fnCreateDateRangeInput() {
 
-        th.html('From');
-        var sFromId = 'range_from_' + i;
+        th.html(_fnRangeLabelPart(0));
+        var sFromId = sTableId + 'range_from_' + i;
         var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
         from.datepicker();
         th.append(from);
-        th.append(' to ');
-        var sToId = 'range_to_' + i;
+        th.append(_fnRangeLabelPart(1));
+        var sToId = sTableId + 'range_to_' + i;
         var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
         th.append(to);
-        th.wrapInner('<span class="filterColumn" />');
+        th.append(_fnRangeLabelPart(2));
+        th.wrapInner('<span class="filterColumn filter_date_range" />');
         to.datepicker();
         var index = i;
         aiCustomSearch_Indexes.push(i);
@@ -198,7 +206,7 @@ http://www.datatables.net/plug-ins/filtering
         }
         var select = $(r + '</select>');
         th.html(select);
-        th.wrapInner('<span class="filterColumn" />');
+        th.wrapInner('<span class="filterColumn filter_select" />');
         select.change(function () {
             //var val = $(this).val();
             if ($(this).val() != "") {
@@ -210,6 +218,17 @@ http://www.datatables.net/plug-ins/filtering
         });
     }
 
+    function _fnRangeLabelPart(iPlace){
+        switch(iPlace){
+        case 0:
+            return sRangeFormat.substring(0, sRangeFormat.indexOf("{from}"));
+        case 1:
+            return sRangeFormat.substring(sRangeFormat.indexOf("{from}") + 6, sRangeFormat.indexOf("{to}"));
+        default:
+            return sRangeFormat.substring(sRangeFormat.indexOf("{to}") + 4);
+	}
+    }
+
 
     $.fn.columnFilter = function (options) {
 
@@ -219,7 +238,8 @@ http://www.datatables.net/plug-ins/filtering
             sPlaceHolder: "foot",
             sRangeSeparator: "~",
             iFilteringDelay: 500,
-            aoColumns: null
+            aoColumns: null,
+            sRangeFormat: "From {from} to {to}"
 
         };
 
@@ -239,19 +259,22 @@ http://www.datatables.net/plug-ins/filtering
 
             $(sFilterRow + " th", oTable).each(function (index) {
                 i = index;
-                var aoColumn = { type : "text",
-                                 bRegex: false,
-                                 bSmart: true   
-                                };
-                if(properties.aoColumns != null)
-                {
-                    if(properties.aoColumns.length < i || properties.aoColumns[i] == null)
+                var aoColumn = { type: "text",
+                    bRegex: false,
+                    bSmart: true
+                };
+                if (properties.aoColumns != null) {
+                    if (properties.aoColumns.length < i || properties.aoColumns[i] == null)
                         return;
                     aoColumn = properties.aoColumns[i];
                 }
                 label = $(this).text(); //"Search by " + $(this).text();
                 th = $($(this)[0]);
                 if (aoColumn != null) {
+                    if (aoColumn.sRangeFormat != null)
+                        sRangeFormat = aoColumn.sRangeFormat;
+                    else
+                        sRangeFormat = properties.sRangeFormat
                     switch (aoColumn.type) {
                         case "number":
                             fnCreateInput(true, false, true);

@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     0.9.0
+* Version:     1.0.0
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -12,22 +12,13 @@
 * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
 * or FITNESS FOR A PARTICULAR PURPOSE. 
 * 
-* Parameters:
-* @sPlaceHolder                 String      Place where inline filtering function should be place ("tfoot", "thead"). Default is "tfoot"
+* Parameters:"
+* @sPlaceHolder                 String      Place where inline filtering function should be placed ("tfoot", "thead:before", "thead:after"). Default is "tfoot"
 * @sRangeSeparator              String      Separatot that will be used when range values are sent to the server-side. Default value is "~".
-* @iFilteringDelay              int         TODO: Delay that will be set between the filtering requests. Default is 250.
 * @sRangeFormat                 string      Default format of the From ... to ... range inputs. Default is From {from} to {to}
 * @aoColumns                    Array       Array of the filter settings that will be applied on the columns
-
-http://www.datatables.net/plug-ins/filtering
-
 */
 (function ($) {
-
-
-
-
-
 
     var asInitVals, i, label, th;
 

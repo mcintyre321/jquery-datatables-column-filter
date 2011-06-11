@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.1.0
+* Version:     1.2.0
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -20,81 +20,87 @@
 */
 (function ($) {
 
-    var asInitVals, i, label, th;
 
-    var sTableId = "table";
-    var sRangeFormat = "From {from} to {to}";
-    //Array of the functions that will override sSearch_ parameters
-    var afnSearch_ = new Array();
-    var aiCustomSearch_Indexes = new Array();
+    $.fn.columnFilter = function (options) {
 
-    var oFunctionTimeout = null;
+        var asInitVals, i, label, th;
+
+        //var sTableId = "table";
+        var sRangeFormat = "From {from} to {to}";
+        //Array of the functions that will override sSearch_ parameters
+        var afnSearch_ = new Array();
+        var aiCustomSearch_Indexes = new Array();
+
+        var oFunctionTimeout = null;
 
 
-    function fnCreateInput(regex, smart, bIsNumber) {
-        var sCSSClass = "text_filter";
-        if (bIsNumber)
-            sCSSClass = "number_filter";
-        var input = $('<input type="text" class="search_init ' + sCSSClass + '" value="' + label + '"/>');
-        th.html(input);
-        if (bIsNumber)
-            th.wrapInner('<span class="filter_column filter_number" />');
-        else
-            th.wrapInner('<span class="filter_column filter_text" />');
-        asInitVals[i] = label;
-        var index = i;
+        function fnCreateInput(oTable, regex, smart, bIsNumber) {
+            var sCSSClass = "text_filter";
+            if (bIsNumber)
+                sCSSClass = "number_filter";
+            var input = $('<input type="text" class="search_init ' + sCSSClass + '" value="' + label + '"/>');
+            th.html(input);
+            if (bIsNumber)
+                th.wrapInner('<span class="filter_column filter_number" />');
+            else
+                th.wrapInner('<span class="filter_column filter_text" />');
+            asInitVals[i] = label;
+            var index = i;
 
-        if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
-            input.keyup(function () {
-                /* Filter on the column all numbers that starts with the entered value */
-                oTable.fnFilter('^' + this.value, index, true, false);
+            if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
+                input.keyup(function () {
+                    /* Filter on the column all numbers that starts with the entered value */
+                    oTable.fnFilter('^' + this.value, index, true, false);
+                });
+            } else {
+                input.keyup(function () {
+                    /* Filter on the column (the index) of this element */
+                    oTable.fnFilter(this.value, index, regex, smart);
+                });
+            }
+
+            input.focus(function () {
+                if ($(this).hasClass("search_init")) {
+                    $(this).removeClass("search_init");
+                    this.value = "";
+                }
             });
-        } else {
-            input.keyup(function () {
-                /* Filter on the column (the index) of this element */
-                oTable.fnFilter(this.value, index, regex, smart);
+            input.blur(function () {
+                if (this.value == "") {
+                    $(this).addClass("search_init");
+                    this.value = asInitVals[index];
+                }
             });
         }
 
-        input.focus(function () {
-            if ($(this).hasClass("search_init")) {
-                $(this).removeClass("search_init");
-                this.value = "";
-            }
-        });
-        input.blur(function () {
-            if (this.value == "") {
-                $(this).addClass("search_init");
-                this.value = asInitVals[index];
-            }
-        });
-    }
+        function fnCreateRangeInput(oTable) {
 
-    function fnCreateRangeInput() {
-
-        th.html(_fnRangeLabelPart(0));
-        var sFromId = sTableId + 'range_from_' + i;
-        var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
-        th.append(from);
-        th.append(_fnRangeLabelPart(1));
-        var sToId = sTableId + 'range_to_' + i;
-        var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
-        th.append(to);
-        th.append(_fnRangeLabelPart(2));
-        th.wrapInner('<span class="filterColumn filter_number_range" />');
-        var index = i;
-        aiCustomSearch_Indexes.push(i);
+            th.html(_fnRangeLabelPart(0));
+            var sFromId = oTable.attr("id") + '_range_from_' + i;
+            var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            th.append(from);
+            th.append(_fnRangeLabelPart(1));
+            var sToId = oTable.attr("id") + '_range_to_' + i;
+            var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            th.append(to);
+            th.append(_fnRangeLabelPart(2));
+            th.wrapInner('<span class="filterColumn filter_number_range" />');
+            var index = i;
+            aiCustomSearch_Indexes.push(i);
 
 
 
-        //------------start range filtering function
+            //------------start range filtering function
 
 
-        /* 	Custom filtering function which will filter data in column four between two values
-        *	Author: 	Allan Jardine, Modified by Jovan Popovic
-        */
-        $.fn.dataTableExt.afnFiltering.push(
+            /* 	Custom filtering function which will filter data in column four between two values
+            *	Author: 	Allan Jardine, Modified by Jovan Popovic
+            */
+            //$.fn.dataTableExt.afnFiltering.push(
+            oTable.dataTableExt.afnFiltering.push(
 	        function (oSettings, aData, iDataIndex) {
+	            if (oTable.attr("id") != oSettings.sTableId)
+	                return true;
 	            var iMin = document.getElementById(sFromId).value * 1;
 	            var iMax = document.getElementById(sToId).value * 1;
 	            var iValue = aData[index] == "-" ? 0 : aData[index] * 1;
@@ -113,47 +119,51 @@
 	            return false;
 	        }
         );
-        //------------end range filtering function
+            //------------end range filtering function
 
 
 
-        $('#' + sFromId + ',#' + sToId, th).keyup(function () {
+            $('#' + sFromId + ',#' + sToId, th).keyup(function () {
 
-            var iMin = document.getElementById(sFromId).value * 1;
-            var iMax = document.getElementById(sToId).value * 1;
-            if (iMin != 0 && iMax != 0 && iMin > iMax)
-                return;
+                var iMin = document.getElementById(sFromId).value * 1;
+                var iMax = document.getElementById(sToId).value * 1;
+                if (iMin != 0 && iMax != 0 && iMin > iMax)
+                    return;
 
-            oTable.fnDraw();
+                oTable.fnDraw();
 
-        });
-
-
-    }
+            });
 
 
-    function fnCreateDateRangeInput() {
-
-        th.html(_fnRangeLabelPart(0));
-        var sFromId = sTableId + 'range_from_' + i;
-        var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
-        from.datepicker();
-        th.append(from);
-        th.append(_fnRangeLabelPart(1));
-        var sToId = sTableId + 'range_to_' + i;
-        var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
-        th.append(to);
-        th.append(_fnRangeLabelPart(2));
-        th.wrapInner('<span class="filterColumn filter_date_range" />');
-        to.datepicker();
-        var index = i;
-        aiCustomSearch_Indexes.push(i);
+        }
 
 
-        //------------start date range filtering function
+        function fnCreateDateRangeInput(oTable) {
 
-        $.fn.dataTableExt.afnFiltering.push(
+            th.html(_fnRangeLabelPart(0));
+            var sFromId = oTable.attr("id") + '_range_from_' + i;
+            var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            from.datepicker();
+            th.append(from);
+            th.append(_fnRangeLabelPart(1));
+            var sToId = oTable.attr("id") + '_range_to_' + i;
+            var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            th.append(to);
+            th.append(_fnRangeLabelPart(2));
+            th.wrapInner('<span class="filterColumn filter_date_range" />');
+            to.datepicker();
+            var index = i;
+            aiCustomSearch_Indexes.push(i);
+
+
+            //------------start date range filtering function
+
+            //$.fn.dataTableExt.afnFiltering.push(
+            oTable.dataTableExt.afnFiltering.push(
 	        function (oSettings, aData, iDataIndex) {
+	            if (oTable.attr("id") != oSettings.sTableId)
+	                return true;
+
 	            var dStartDate = from.datepicker("getDate");
 
 	            var dEndDate = to.datepicker("getDate");
@@ -178,50 +188,50 @@
 	            return false;
 	        }
         );
-        //------------end date range filtering function
+            //------------end date range filtering function
 
-        $('#' + sFromId + ',#' + sToId, th).change(function () {
-            oTable.fnDraw();
-        });
-
-
-    }
+            $('#' + sFromId + ',#' + sToId, th).change(function () {
+                oTable.fnDraw();
+            });
 
 
-    function fnCreateSelect(aData) {
-        var index = i;
-        var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
-
-        for (j = 0; j < iLen; j++) {
-            r += '<option value="' + aData[j] + '">' + aData[j] + '</option>';
         }
-        var select = $(r + '</select>');
-        th.html(select);
-        th.wrapInner('<span class="filterColumn filter_select" />');
-        select.change(function () {
-            //var val = $(this).val();
-            if ($(this).val() != "") {
-                $(this).removeClass("search_init");
-            } else {
-                $(this).addClass("search_init");
+
+
+        function fnCreateSelect(oTable, aData) {
+            var index = i;
+            var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
+
+            for (j = 0; j < iLen; j++) {
+                r += '<option value="' + aData[j] + '">' + aData[j] + '</option>';
             }
-            oTable.fnFilter($(this).val(), index);
-        });
-    }
+            var select = $(r + '</select>');
+            th.html(select);
+            th.wrapInner('<span class="filterColumn filter_select" />');
+            select.change(function () {
+                //var val = $(this).val();
+                if ($(this).val() != "") {
+                    $(this).removeClass("search_init");
+                } else {
+                    $(this).addClass("search_init");
+                }
+                oTable.fnFilter($(this).val(), index);
+            });
+        }
 
-    function _fnRangeLabelPart(iPlace){
-        switch(iPlace){
-        case 0:
-            return sRangeFormat.substring(0, sRangeFormat.indexOf("{from}"));
-        case 1:
-            return sRangeFormat.substring(sRangeFormat.indexOf("{from}") + 6, sRangeFormat.indexOf("{to}"));
-        default:
-            return sRangeFormat.substring(sRangeFormat.indexOf("{to}") + 4);
-	}
-    }
+        function _fnRangeLabelPart(iPlace) {
+            switch (iPlace) {
+                case 0:
+                    return sRangeFormat.substring(0, sRangeFormat.indexOf("{from}"));
+                case 1:
+                    return sRangeFormat.substring(sRangeFormat.indexOf("{from}") + 6, sRangeFormat.indexOf("{to}"));
+                default:
+                    return sRangeFormat.substring(sRangeFormat.indexOf("{to}") + 4);
+            }
+        }
 
 
-    $.fn.columnFilter = function (options) {
+
 
         oTable = this;
 
@@ -244,7 +254,7 @@
                 sFilterRow = "thead tr:last";
             } else if (properties.sPlaceHolder == "head:before") {
                 var tr = $("thead tr:last", oTable).detach();
-                tr.prependTo( $("thead", oTable));
+                tr.prependTo($("thead", oTable));
                 sFilterRow = "thead tr:first";
             }
 
@@ -268,21 +278,21 @@
                         sRangeFormat = properties.sRangeFormat
                     switch (aoColumn.type) {
                         case "number":
-                            fnCreateInput(true, false, true);
+                            fnCreateInput(oTable, true, false, true);
                             break;
                         case "text":
                             bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
                             bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
-                            fnCreateInput(bRegex, bSmart, false);
+                            fnCreateInput(oTable, bRegex, bSmart, false);
                             break;
                         case "select":
-                            fnCreateSelect(aoColumn.values);
+                            fnCreateSelect(oTable, aoColumn.values);
                             break;
                         case "number-range":
-                            fnCreateRangeInput();
+                            fnCreateRangeInput(oTable);
                             break;
                         case "date-range":
-                            fnCreateDateRangeInput();
+                            fnCreateDateRangeInput(oTable);
 
                             break;
                         default:

@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.0
+* Version:     1.2.1
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -107,13 +107,13 @@
 	            if (iMin == "" && iMax == "") {
 	                return true;
 	            }
-	            else if (iMin == "" && iValue < iMax) {
+	            else if (iMin == "" && iValue <= iMax) {
 	                return true;
 	            }
-	            else if (iMin < iValue && "" == iMax) {
+	            else if (iMin <= iValue && "" == iMax) {
 	                return true;
 	            }
-	            else if (iMin < iValue && iValue < iMax) {
+	            else if (iMin <= iValue && iValue <= iMax) {
 	                return true;
 	            }
 	            return false;
@@ -176,13 +176,13 @@
 	            if (dStartDate == null && dEndDate == null) {
 	                return true;
 	            }
-	            else if (dStartDate == null && dCellDate < dEndDate) {
+	            else if (dStartDate == null && dCellDate <= dEndDate) {
 	                return true;
 	            }
-	            else if (dStartDate < dCellDate && dEndDate == null) {
+	            else if (dStartDate <= dCellDate && dEndDate == null) {
 	                return true;
 	            }
-	            else if (dStartDate < dCellDate && dCellDate < dEndDate) {
+	            else if (dStartDate <= dCellDate && dCellDate <= dEndDate) {
 	                return true;
 	            }
 	            return false;

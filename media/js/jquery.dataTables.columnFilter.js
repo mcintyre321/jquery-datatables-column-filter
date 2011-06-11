@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.0.0
+* Version:     1.1.0
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -243,8 +243,8 @@
             if (properties.sPlaceHolder == "head:after") {
                 sFilterRow = "thead tr:last";
             } else if (properties.sPlaceHolder == "head:before") {
-                var tr = $("thead tr:last").detach();
-                tr.prependTo("thead");
+                var tr = $("thead tr:last", oTable).detach();
+                tr.prependTo( $("thead", oTable));
                 sFilterRow = "thead tr:first";
             }
 

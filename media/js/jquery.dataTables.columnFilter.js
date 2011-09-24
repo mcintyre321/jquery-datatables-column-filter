@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.1
+* Version:     1.2.2
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -38,6 +38,9 @@
             var sCSSClass = "text_filter";
             if (bIsNumber)
                 sCSSClass = "number_filter";
+
+            label = label.replace(/(^\s*)|(\s*$)/g, "");
+
             var input = $('<input type="text" class="search_init ' + sCSSClass + '" value="' + label + '"/>');
             th.html(input);
             if (bIsNumber)
@@ -167,16 +170,24 @@
 	            var dStartDate = from.datepicker("getDate");
 
 	            var dEndDate = to.datepicker("getDate");
+	            
+                if (dStartDate == null && dEndDate == null) {
+	                return true;
+	            }
 
-	            var dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[index]);
-
+	            var dCellDate = null;
+	            try {
+	                if (aData[index] == null || aData[index] == "")
+	                    return false;
+	                dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[index]);
+	            } catch (ex) {
+	                return false;
+	            }
 	            if (dCellDate == null)
 	                return false;
 
-	            if (dStartDate == null && dEndDate == null) {
-	                return true;
-	            }
-	            else if (dStartDate == null && dCellDate <= dEndDate) {
+
+	            if (dStartDate == null && dCellDate <= dEndDate) {
 	                return true;
 	            }
 	            else if (dStartDate <= dCellDate && dEndDate == null) {
@@ -203,7 +214,7 @@
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
 
             for (j = 0; j < iLen; j++) {
-                r += '<option value="' + aData[j] + '">' + aData[j] + '</option>';
+                r += '<option value="' + escape( aData[j] ) + '">' + aData[j] + '</option>';
             }
             var select = $(r + '</select>');
             th.html(select);
@@ -215,7 +226,7 @@
                 } else {
                     $(this).addClass("search_init");
                 }
-                oTable.fnFilter($(this).val(), index);
+                oTable.fnFilter( unescape( $(this).val() ), index);
             });
         }
 

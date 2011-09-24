@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.2
+* Version:     1.2.3
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -170,8 +170,8 @@
 	            var dStartDate = from.datepicker("getDate");
 
 	            var dEndDate = to.datepicker("getDate");
-	            
-                if (dStartDate == null && dEndDate == null) {
+
+	            if (dStartDate == null && dEndDate == null) {
 	                return true;
 	            }
 
@@ -214,7 +214,7 @@
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
 
             for (j = 0; j < iLen; j++) {
-                r += '<option value="' + escape( aData[j] ) + '">' + aData[j] + '</option>';
+                r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
             }
             var select = $(r + '</select>');
             th.html(select);
@@ -226,7 +226,7 @@
                 } else {
                     $(this).addClass("search_init");
                 }
-                oTable.fnFilter( unescape( $(this).val() ), index);
+                oTable.fnFilter(unescape($(this).val()), index);
             });
         }
 
@@ -314,9 +314,10 @@
             });
 
             for (j = 0; j < aiCustomSearch_Indexes.length; j++) {
-                var index = aiCustomSearch_Indexes[j];
+                //var index = aiCustomSearch_Indexes[j];
                 var fnSearch_ = function () {
-                    return $("#range_from_" + index).val() + properties.sRangeSeparator + $("#range_to_" + index).val()
+                    var id = oTable.attr("id");
+                    return $("#" + id + "_range_from_" + aiCustomSearch_Indexes[j]).val() + properties.sRangeSeparator + $("#" + id + "_range_to_" + aiCustomSearch_Indexes[j]).val()
                 }
                 afnSearch_.push(fnSearch_);
             }

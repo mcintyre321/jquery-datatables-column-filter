@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.6
+* Version:     1.2.7
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -235,6 +235,65 @@
             });
         }
 
+        function fnCreateCheckbox(oTable, aData) {
+            var index = i;
+
+            var r = '', j, iLen = aData.length, localLabel = label;
+
+            r += '<button id="chkBtnOpen' + localLabel + '" >' + localLabel + '</button>';
+            r += '<div id="' + localLabel + '-flt-toggle" class="toggle-check ui-widget-content ui-corner-all">';
+
+            for (j = 0; j < iLen; j++) {
+                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
+
+                var checkbox = $(r);
+                th.html(checkbox);
+                th.wrapInner('<span class="filterColumn filter_checkbox" />');
+                checkbox.change(function () {
+
+                    var search = '';
+
+                    $('input:checkbox[name="' + localLabel + '"]:checked').each(function (index) {
+
+                        search = search + ' ' + $(this).val();
+
+                    });
+
+                    for (var jj = 0; jj < iLen; jj++) {
+
+                        if ($('#' + aData[jj]).is(':checked')) {
+
+                            if (search != "" && aData[jj] != "" && iLen > jj + 1) {
+                                search = search + '|';
+                            }
+
+                            search = search + aData[jj];
+                        }
+
+                    }
+
+                    for (var jj = 0; jj < iLen; jj++) {
+                        if (search != "") {
+                            $('#' + aData[jj]).removeClass("search_init");
+                        } else {
+                            $('#' + aData[jj]).addClass("search_init");
+                        }
+                    }
+
+                    oTable.fnFilter(search, index, true, false);
+                });
+            }
+
+            $('#' + localLabel + '-flt-toggle').hide();
+            $('#chkBtnOpen' + localLabel).click(function () {
+                $('#' + localLabel + '-flt-toggle').slideToggle("fast");
+                return false;
+            });
+        }
+
+
+
+
         function _fnRangeLabelPart(iPlace) {
             switch (iPlace) {
                 case 0:
@@ -312,7 +371,9 @@
                             break;
                         case "date-range":
                             fnCreateDateRangeInput(oTable);
-
+                            break;
+                        case "checkbox":
+                            fnCreateCheckbox(oTable, aoColumn.values);
                             break;
                         default:
                             break;

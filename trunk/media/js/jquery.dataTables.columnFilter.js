@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.4
+* Version:     1.2.5
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -344,7 +344,11 @@
                     aoData.push({ "name": "sRangeSeparator", "value": properties.sRangeSeparator });
 
                     if (fnServerDataOriginal != null) {
-                        fnServerDataOriginal(sSource, aoData, fnCallback);
+                        try{
+                            fnServerDataOriginal(sSource, aoData, fnCallback, oTable.fnSettings());//TODO: See Issue 18
+                        }catch{ 
+                            fnServerDataOriginal(sSource, aoData, fnCallback);
+                         }
                     }
                     else {
                         $.getJSON(sSource, aoData, function (json) {

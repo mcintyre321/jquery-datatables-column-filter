@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.5
+* Version:     1.2.6
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -267,9 +267,12 @@
             asInitVals = new Array();
             var sFilterRow = "tfoot tr";
             if (properties.sPlaceHolder == "head:after") {
+                var tr = $("thead tr:last", oTable).detach();
+                tr.prependTo($("thead", oTable));
                 sFilterRow = "thead tr:last";
             } else if (properties.sPlaceHolder == "head:before") {
-                var tr = $("thead tr:last", oTable).detach();
+                var tr = $("thead tr:first", oTable).detach();
+                //tr.attr("id", 1);
                 tr.prependTo($("thead", oTable));
                 sFilterRow = "thead tr:first";
             }
@@ -344,11 +347,11 @@
                     aoData.push({ "name": "sRangeSeparator", "value": properties.sRangeSeparator });
 
                     if (fnServerDataOriginal != null) {
-                        try{
-                            fnServerDataOriginal(sSource, aoData, fnCallback, oTable.fnSettings());//TODO: See Issue 18
-                        }catch(ex){ 
+                        try {
+                            fnServerDataOriginal(sSource, aoData, fnCallback, oTable.fnSettings()); //TODO: See Issue 18
+                        } catch (ex) {
                             fnServerDataOriginal(sSource, aoData, fnCallback);
-                         }
+                        }
                     }
                     else {
                         $.getJSON(sSource, aoData, function (json) {

@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.3
+* Version:     1.2.4
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -214,7 +214,12 @@
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
 
             for (j = 0; j < iLen; j++) {
-                r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
+                if (typeof (aData[j]) != 'object') {
+                    r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
+                }
+                else {
+                    r += '<option value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
+                }
             }
             var select = $(r + '</select>');
             th.html(select);

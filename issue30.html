@@ -74,20 +74,14 @@
                                       "bServerSide": true,
                       //"sAjaxSource": "server_processing.js"
                       // "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
-                                           "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/objects.php",
-          "aoColumns": [
-            { "mDataProp": "engine" },
-            { "mDataProp": "browser" },
-            { "mDataProp": "platform" },
-            { "mDataProp": "version" },
-            { "mDataProp": "grade" }
-                                    }).columnFilter({
-										sPlaceHolder: "head:before",
-										aoColumns: [ { type: "text"  },
-												 { type: "text" },
-												 { type: "text" },
-												 { type: "text" }
-											],
+                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/objects.php",
+                                       "aoColumns": [
+                                          { "mDataProp": "engine" },
+                                          { "mDataProp": "browser" },
+                                          { "mDataProp": "platform" },
+                                          { "mDataProp": "version" },
+                                          { "mDataProp": "grade" }
+                                          ],
 										"fnServerData": function( sUrl, aoData, fnCallback ) {
 											$.ajax( {
 												"url": sUrl,
@@ -95,7 +89,15 @@
 												"success": fnCallback,
 												"dataType": "jsonp",
 												"cache": false
-											} );
+											} 
+                                        }).columnFilter({
+										sPlaceHolder: "head:before",
+										aoColumns: [ { type: "text"  },
+												 { type: "text" },
+												 { type: "text" },
+												 { type: "text" }
+                                           ]
+											);
                     }
 
 									});//end example3

@@ -37,8 +37,7 @@
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
 				$('#example').dataTable().columnFilter({aoColumns: [
-{ type: "checkbox", values: [ 'Gecko', 'Trident'] },{},{},{},{ type: "checkbox", values: [ 'A', 'C']  } ]});
-				
+						{ type: "checkbox", values: [ 'Gecko', 'Trident'] },{},{},{},{ type: "checkbox", values: [ 'A', 'C']  } ]});		
 			} );
 		</script>
         <script type="text/javascript">
@@ -576,26 +575,13 @@
 
 			
 			<h1>Initialization code</h1>
-			<p>Initialization code is very simple. You just need to add columnFilter() call to the DataTable instance. By default 
-			filters for the text searches will be added to each footer cell.</p>
+			<p>Initialization code is very simple. You just need to add set checkbox type and set the values that will be used for filtering.</p>
 			<pre>$(document).ready( function () {
-		$('#example').dataTable().columnFilter();
-}
+				$('#example').dataTable().columnFilter({aoColumns: [
+						{ type: "checkbox", values: [ 'Gecko', 'Trident'] },{},{},{},{ type: "checkbox", values: [ 'A', 'C']  } ]});		
+} );
 	</pre>
-			<h1>Additional HTML code</h1>
-	
-	<p>In the default mode you will need to have a valid table footer in the table as shown in the following example:</p>
-<pre>
-	&lt;tfoot&gt;
-		&lt;tr&gt;
-			&lt;th&gt;Rendering engine&lt;/th&gt;
-			&lt;th&gt;Browser&lt;/th&gt;
-			&lt;th&gt;Platform(s)&lt;/th&gt;
-			&lt;th&gt;Engine version&lt;/th&gt;
-			&lt;th&gt;CSS grade&lt;/th&gt;
-		&lt;/tr&gt;
-	&lt;/tfoot&gt;
-</pre>
+			
 			
 
 

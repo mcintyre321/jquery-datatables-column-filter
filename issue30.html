@@ -27,38 +27,38 @@
                                       "bServerSide": true,
                                       //"sAjaxSource": "server_processing.js"
                                        "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/ids.php",
-										"fnServerData": function( sUrl, aoData, fnCallback ) {
-											$.ajax( {
-												"url": sUrl,
-												"data": aoData,
-												"success": fnCallback,
-												"dataType": "jsonp",
-												"cache": false
-											} );
-										}
+                                       "fnServerData": function( sUrl, aoData, fnCallback ) {
+                                         	$.ajax( {
+                                       				"url": sUrl,
+                                       				"data": aoData,
+                                       				"success": fnCallback,
+                                       				"dataType": "jsonp",
+                                       				"cache": false
+							                              				} );
+                                       }
                                     }).columnFilter({
-										sPlaceHolder: "head:before",
-										aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
-												 { type: "text" },
-												 { type: "text" },
-												 { type: "text" }
-											]
-									});//end example1
+                                       				sPlaceHolder: "head:before",
+                                       				aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
+                                       				  	 { type: "text" },
+                                       						 { type: "text" },
+                                       						 { type: "text" }
+                                       				]
+                                       		 });//end example1
 									
            			$('#example2').dataTable({
                                       "bProcessing": true,
                                       "bServerSide": true,
                                       //"sAjaxSource": "server_processing.js"
                                        "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
-										"fnServerData": function( sUrl, aoData, fnCallback ) {
-											$.ajax( {
-												"url": sUrl,
-												"data": aoData,
-												"success": fnCallback,
-												"dataType": "jsonp",
-												"cache": false
-											} );
-										}
+                                       "fnServerData": function( sUrl, aoData, fnCallback ) {
+                                         	$.ajax( {
+                                       				"url": sUrl,
+                                       				"data": aoData,
+                                       				"success": fnCallback,
+                                       				"dataType": "jsonp",
+                                       				"cache": false
+							                              				} );
+                                       }
                                     }).columnFilter({
 										sPlaceHolder: "head:after",
 										aoColumns: [ { type: "text" },
@@ -82,15 +82,16 @@
                                           { "mDataProp": "version" },
                                           { "mDataProp": "grade" }
                                           ],
-										"fnServerData": function( sUrl, aoData, fnCallback ) {
-											$.ajax( {
-												"url": sUrl,
-												"data": aoData,
-												"success": fnCallback,
-												"dataType": "jsonp",
-												"cache": false
-											} 
-                                        }).columnFilter({
+                                       "fnServerData": function( sUrl, aoData, fnCallback ) {
+                                         	$.ajax( {
+                                       				"url": sUrl,
+                                       				"data": aoData,
+                                       				"success": fnCallback,
+                                       				"dataType": "jsonp",
+                                       				"cache": false
+							                              				} );
+                                       }
+                                   }).columnFilter({
 										sPlaceHolder: "head:before",
 										aoColumns: [ { type: "text"  },
 												 { type: "text" },

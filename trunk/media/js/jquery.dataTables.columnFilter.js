@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.7
+* Version:     1.2.8
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -238,39 +238,82 @@
         function fnCreateCheckbox(oTable, aData) {
             var index = i;
 
-            var r = '', j, iLen = aData.length, localLabel = label;
+            var r = '', j, iLen = aData.length;
 
-            r += '<button id="chkBtnOpen' + localLabel + '" >' + localLabel + '</button>';
-            r += '<div id="' + localLabel + '-flt-toggle" class="toggle-check ui-widget-content ui-corner-all">';
+            //clean the string
+            var localLabel= label.replace('%','Perc').replace("&","AND").replace("$","DOL").replace("£","STERL").replace("@","AT").replace(/\s/g,"_");
+            localLabel= localLabel.replace(/[^a-zA-Z 0-9]+/g,'');
+            //clean the string
+            
+            //button label override
+            if(properties.sFilterButtonText != null || properties.sFilterButtonText != undefined){
+           	 labelBtn = properties.sFilterButtonText;
+           }else{
+           	 labelBtn = label;
+           }
 
-            for (j = 0; j < iLen; j++) {
-                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
+            var relativeDivWidthToggleSize = 10;
+            var numRow = 12;//numero di checkbox per colonna
+            var numCol = Math.floor(iLen/numRow);
+            if(iLen%numRow >0){
+            	numCol = numCol +1;
+            };
+            
+            //count how many column should be generated and split the div size
+            var divWidth = 100 / numCol -2;
+            
+            var divWidthToggle = relativeDivWidthToggleSize * numCol;
+            
+            if(numCol == 1){
+            	divWidth = 20;
+            }
+            
+            var divRowDef = '<div style="float:left; min-width: '+divWidth+'%; " >';
+            var divClose = '</div>';
+            
+            var uniqueId = oTable.attr("id")+localLabel;
+            var buttonId = "chkBtnOpen"+uniqueId;
+            var checkToggleDiv = uniqueId+"-flt-toggle";
+            r+= '<button id="'+buttonId+'" class="checkbox_filter" > '+labelBtn+'</button>'; //filter button witch open dialog
+            r+= '<div id="'+checkToggleDiv+'" '
+            	+'title="'+label+'" '
+            	+'class="toggle-check ui-widget-content ui-corner-all"  style="width: '+(divWidthToggle)+'%; " >'; //dialog div
+            r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
+            r+= divRowDef;
+
+             for (j = 0; j < iLen; j++) {
+            	
+            	//if last check close div
+                if(j%numRow==0 && j!=0 ){
+                    r+= divClose +  divRowDef;
+                }
+                
+            	//check button
+               r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
 
                 var checkbox = $(r);
                 th.html(checkbox);
                 th.wrapInner('<span class="filterColumn filter_checkbox" />');
+                //on every checkbox selection
                 checkbox.change(function () {
 
                     var search = '';
-
+                    var or = '|'; //var for select checks in 'or' into the regex
+                    var resSize = $('input:checkbox[name="'+localLabel+'"]:checked').size();
                     $('input:checkbox[name="' + localLabel + '"]:checked').each(function (index) {
 
-                        search = search + ' ' + $(this).val();
+                        //search = search + ' ' + $(this).val();
+                    	//concatenation for selected checks in or
+                 		if((index==0 && resSize==1)
+                				|| (index!=0 && index == resSize-1 )){
+                			or = '';
+                		}
+                		//trim
+                		search = search.replace(/^\s+|\s+$/g,"");
+                		search = search + $(this).val() + or;
+                		or = '|';
 
                     });
-
-                    for (var jj = 0; jj < iLen; jj++) {
-
-                        if ($('#' + aData[jj]).is(':checked')) {
-
-                            if (search != "" && aData[jj] != "" && iLen > jj + 1) {
-                                search = search + '|';
-                            }
-
-                            search = search + aData[jj];
-                        }
-
-                    }
 
                     for (var jj = 0; jj < iLen; jj++) {
                         if (search != "") {
@@ -280,15 +323,33 @@
                         }
                     }
 
+                    //execute search
                     oTable.fnFilter(search, index, true, false);
                 });
             }
 
-            $('#' + localLabel + '-flt-toggle').hide();
-            $('#chkBtnOpen' + localLabel).click(function () {
-                $('#' + localLabel + '-flt-toggle').slideToggle("fast");
-                return false;
-            });
+            //filter button
+    		$('#'+buttonId).button();
+    		//dialog
+    		$('#'+checkToggleDiv).dialog({
+    			height: 140,
+    			autoOpen: false
+    		}); 
+    		$('#'+buttonId).click(function(){
+    			$('#'+checkToggleDiv).dialog('open');
+    			return false;
+    		}); 
+    		//reset
+    		$('#'+buttonId+"Reset").button();
+    		$('#'+buttonId+"Reset").click(function(){
+    			$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
+            	$('input:checkbox[name="'+localLabel+'"]:checked').each(function(index3) {
+            		$(this).attr('checked', false);
+                    $(this).addClass("search_init");
+            	});
+            	 oTable.fnFilter('', index, true, false);
+    			return false;
+    		}); 
         }
 
 

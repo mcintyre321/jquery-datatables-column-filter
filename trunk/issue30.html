@@ -1,4 +1,4 @@
-﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
 
 	
@@ -72,8 +72,8 @@
            			$('#example3').dataTable({
                                       "bProcessing": true,
                                       "bServerSide": true,
-                                      //"sAjaxSource": "server_processing.js"
-                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
+                                      "sAjaxSource": "server_processing.js"
+                      /* "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
 										"fnServerData": function( sUrl, aoData, fnCallback ) {
 											$.ajax( {
 												"url": sUrl,
@@ -82,7 +82,7 @@
 												"dataType": "jsonp",
 												"cache": false
 											} );
-										}
+                    }*/
                                     }).columnFilter({
 										sPlaceHolder: "head:before",
 										aoColumns: [ { type: "text"  },

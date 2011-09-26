@@ -25,7 +25,8 @@
                                       "bProcessing": true,
                                       "bServerSide": true,
                                       //"sAjaxSource": "server_processing.js"
-                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/id.php",
+                                       //"sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/id.php",
+									   "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php?p=1&tableexample=1",
                                        "fnServerData": function( sUrl, aoData, fnCallback ) {
                                          	$.ajax( {
                                        				"url": sUrl,
@@ -48,7 +49,7 @@
                                       "bProcessing": true,
                                       "bServerSide": true,
                                       //"sAjaxSource": "server_processing.js"
-                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
+                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php?p=2&tableexample=2",
                                        "fnServerData": function( sUrl, aoData, fnCallback ) {
                                          	$.ajax( {
                                        				"url": sUrl,
@@ -71,14 +72,15 @@
            			$('#example3').dataTable({
                                       "bProcessing": true,
                                       "bServerSide": true,
-                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/objects.php",
-                                       "aoColumns": [
+                                       //"sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/objects.php",
+									   "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php?p=3&tableexample=3",
+                                       /*"aoColumns": [
                                           { "mDataProp": "engine" },
                                           { "mDataProp": "browser" },
                                           { "mDataProp": "platform" },
                                           { "mDataProp": "version" },
                                           { "mDataProp": "grade" }
-                                          ],
+                                          ],*/
                                        "fnServerData": function( sUrl, aoData, fnCallback ) {
                                          	$.ajax( {
                                        				"url": sUrl,

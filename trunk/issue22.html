@@ -1,0 +1,250 @@
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with column filter plugin - Server Side Example With three different sources</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/themes/base/jquery-ui.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery.dataTables.columnFilter.js" type="text/javascript"></script>
+		<script src="http://jquery-datatables-row-grouping.googlecode.com/svn/trunk/media/js/jquery.dataTables.rowGrouping.js" type="text/javascript"></script>
+		
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+			
+			$("table.grid").dataTable({
+    aLengthMenu: [[25, 50, 100, -1], [25, 50, 100, 'alle']],
+    bServerside: false,
+    bPaginate: true,
+    oLanguage: {
+        sProcessing: "Bitte warten...",
+        sLengthMenu: "_MENU_ Ergebnisse pro Seite",
+        sZeroRecords: "Keine Einträge vorhanden.",
+        sInfo: "_START_ bis _END_ von _TOTAL_ Einträgen",
+        sInfoEmpty: "0 bis 0 von 0 Einträgen",
+        sInfoFiltered: "(gefiltert von _MAX_  Einträgen)",
+        sInfoPostFix: "",
+        sSearch: "Suchen",
+        sUrl: "",
+        oPaginate: {
+            sFirst:    "Erster",
+            sPrevious: "Zurück",
+            sNext:     "Nächster",
+            sLast:     "Letzter"
+        }
+    }
+}).columnFilter({aoColumns:[null,{type:"text"},{},{type:"text"}]})
+.rowGrouping({
+    sGroupLabelPrefix: "Status: ",
+    sGroupingClass: "rowGroup",
+    bSetGroupingClassOnTR: true
+});
+			
+			
+			} );
+		</script>
+        <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-17838786-4']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
+			<div class="full_width big">
+
+				JQuery DataTable Column Filter - Example for the Issue 22
+			</div>
+			 		
+	
+			
+			
+			<h1>Live example</h1>
+
+
+
+
+
+
+
+			<div id="demo">
+
+<table cellspacing="0" cellpadding="0" border="0" class="grid">
+<thead>
+<tr class="rowHead">
+<th>
+<span class="nobr">
+<a class="sort-arrow-desc" name="status" href="/einrichtung/uebersicht?direction=desc&amp;orderBy=status"><span class="sort-title">Status⇓</span></a></span>
+</th>
+<th>
+<span class="nobr">
+<a class="not-sort" name="name" href="/einrichtung/uebersicht?direction=asc&amp;orderBy=name"><span class="sort-title">Name</span></a></span>
+</th>
+<th>
+<span class="nobr">
+<a class="not-sort" name="inCarrierName" href="/einrichtung/uebersicht?direction=asc&amp;orderBy=inCarrierName"><span class="sort-title">in Träger</span></a></span>
+</th>
+<th class=" no-link last">
+<span class="nobr">
+Aktion</span>
+</th>
+</tr>
+</thead>
+<tbody>
+
+<tr class="rowOdd">
+<td class="a-left ">neu</td>
+<td class="a-left ">Kindervereinigung Rabauken</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol last"><a target="_self" href="/einrichtung/daten?i=c4ca4238a0b923820dcc509a6f75849b"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=c4ca4238a0b923820dcc509a6f75849b"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=c4ca4238a0b923820dcc509a6f75849b"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=c4ca4238a0b923820dcc509a6f75849b"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowEven">
+<td class="a-left ">neu</td>
+<td class="a-left ">Unterschlupf Quatschköpfe</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=eccbc87e4b5ce2fe28308fd9f2a7baf3"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=eccbc87e4b5ce2fe28308fd9f2a7baf3"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=eccbc87e4b5ce2fe28308fd9f2a7baf3"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=eccbc87e4b5ce2fe28308fd9f2a7baf3"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowOdd">
+<td class="a-left ">neu</td>
+<td class="a-left ">Kindertagesstätte Wonneproppen</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=a87ff679a2f3e71d9181a67b7542122c"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=a87ff679a2f3e71d9181a67b7542122c"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=a87ff679a2f3e71d9181a67b7542122c"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=a87ff679a2f3e71d9181a67b7542122c"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowEven">
+<td class="a-left ">neu</td>
+<td class="a-left ">Spieleland Stifte</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=1679091c5a880faf6fb5e6087eb1b2dc"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=1679091c5a880faf6fb5e6087eb1b2dc"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=1679091c5a880faf6fb5e6087eb1b2dc"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=1679091c5a880faf6fb5e6087eb1b2dc"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowOdd">
+<td class="a-left ">neu</td>
+<td class="a-left ">Kinderwelt Knirpse</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=8f14e45fceea167a5a36dedd4bea2543"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=8f14e45fceea167a5a36dedd4bea2543"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=8f14e45fceea167a5a36dedd4bea2543"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=8f14e45fceea167a5a36dedd4bea2543"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowEven">
+<td class="a-left ">neu</td>
+<td class="a-left ">Kindervereinigung Rabauken - 15</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=d3d9446802a44259755d38e6d163e820"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=d3d9446802a44259755d38e6d163e820"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=d3d9446802a44259755d38e6d163e820"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=d3d9446802a44259755d38e6d163e820"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowOdd">
+<td class="a-left ">alt</td>
+<td class="a-left ">Zwergenland Zwerge</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=6512bd43d9caa6e02c990b0a82652dca"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=6512bd43d9caa6e02c990b0a82652dca"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=6512bd43d9caa6e02c990b0a82652dca"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=6512bd43d9caa6e02c990b0a82652dca"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowEven">
+<td class="a-left ">alt</td>
+<td class="a-left ">Zwergenland Zwerge - 10</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=c20ad4d76fe97759aa27a0c99bff6710"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=c20ad4d76fe97759aa27a0c99bff6710"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=c20ad4d76fe97759aa27a0c99bff6710"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=c20ad4d76fe97759aa27a0c99bff6710"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowOdd">
+<td class="a-left ">neu</td>
+<td class="a-left ">Kindertagesstätte Wonneproppen - 43</td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=c51ce410c124a10e0db5e4b97fc2af39"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=c51ce410c124a10e0db5e4b97fc2af39"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=c51ce410c124a10e0db5e4b97fc2af39"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=c51ce410c124a10e0db5e4b97fc2af39"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+
+<tr class="rowEven">
+<td class="a-left ">neu</td>
+<td class="a-left ">Abenteuerhaus Racker </td>
+<td class="a-left ">Träger - 0</td>
+<td class="a-left actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol actionsCol last"><a target="_self" href="/einrichtung/daten?i=9bf31c7ff062936a96d3c8bd1f8f2ff3"><img alt="Eintrag anzeigen" title="Eintrag anzeigen" src="/images/icons/info_braun.png"></a><a target="_self" href="/einrichtung/bearbeiten?i=9bf31c7ff062936a96d3c8bd1f8f2ff3"><img alt="Eintrag bearbeiten" title="Eintrag bearbeiten" src="/images/icons/editieren.png"></a><a target="_blank" href="/einrichtung/portal-profil/vorschau?i=9bf31c7ff062936a96d3c8bd1f8f2ff3"><img alt="Portal-Profil Vorschau" title="Portal-Profil Vorschau" src="/images/icons/portal_vorschau.png"></a><a target="_self" href="/einrichtung/loeschen?i=9bf31c7ff062936a96d3c8bd1f8f2ff3"><img alt="Eintrag löschen " title="Eintrag löschen " src="/images/icons/loeschen.png"></a></td>
+</tr>
+</tbody>
+<tfoot>
+
+<tr class="rowFoot">
+<th>
+
+Status
+</th>
+<th>
+
+Name
+</th>
+<th>
+in Träger
+</th>
+<th>
+Aktion
+</th>
+</tr>
+<!--
+<tr class="rowOdd">
+<td colspan="4"><div id="paginglinks">Seiten: <span class="pagecurrent"><strong>1</strong></span><span>&nbsp;&nbsp;</span><span class="pagelink"><a href="/einrichtung/uebersicht?page=10">2</a></span>&nbsp;&nbsp;<span class="pagelinklast"><a href="/einrichtung/uebersicht?page=10" title="nächste">&gt;</a></span></div></td>
+</tr>
+-->
+</tfoot>
+</table>
+
+
+			</div>
+			<div class="spacer"></div>
+
+			
+			
+
+			
+
+			<h1>Other examples</h1>
+			<ul>
+
+				<li><a href="default.html">Basic usage</a></li>
+				<li><a href="customFilters.html">Custom filters</a></li>
+				<li><a href="dateRange.html">Date ranges</a></li>
+				<li><a href="numberRange.html">Number ranges</a></li>
+				<li><a href="serverSide.html">Server-side filtering</a></li>
+		    <li><a href="regex.html">Regular expression filtering</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Column Filter Add-on &copy; Jovan Popovic 2011.<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+
+
+
+</html>

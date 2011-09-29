@@ -36,8 +36,8 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				$('#example').dataTable().columnFilter({aoColumns: [
-						{ type: "checkbox", values: [ 'Gecko', 'Trident'] },{},{},{},{ type: "checkbox", values: [ 'A', 'C']  } ]});		
+				$('#example').dataTable().columnFilter({ /*sPlaceHolder: "head:after",*/ aoColumns: [
+						{  type: "checkbox", values: [ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Tasman', 'Webkit'] },{},{},{},{ type: "checkbox", values: [ 'A', 'B', 'C', 'U', 'X']  } ]});		
 			} );
 		</script>
         <script type="text/javascript">
@@ -100,11 +100,11 @@
 	<tfoot>
 		<tr>
 
-			<th>Rendering engine</th>
+			<th>Engine</th>
 			<th>Browser</th>
 			<th>Platform(s)</th>
 			<th>Engine version</th>
-			<th>CSS grade</th>
+			<th>CSS</th>
 		</tr>
 	</tfoot>
 	<tbody>

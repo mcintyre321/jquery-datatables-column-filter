@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.8
+* Version:     1.2.9
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -278,7 +278,7 @@
             r+= '<div id="'+checkToggleDiv+'" '
             	+'title="'+label+'" '
             	+'class="toggle-check ui-widget-content ui-corner-all"  style="width: '+(divWidthToggle)+'%; " >'; //dialog div
-            r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
+            //r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
             r+= divRowDef;
 
              for (j = 0; j < iLen; j++) {
@@ -332,14 +332,41 @@
     		$('#'+buttonId).button();
     		//dialog
     		$('#'+checkToggleDiv).dialog({
-    			height: 140,
-    			autoOpen: false
+    			//height: 140,
+    			autoOpen: false,
+				//show: "blind",
+				hide: "blind",
+				buttons: [{
+							text: "Reset",
+							click: function(){
+										//$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
+										$('input:checkbox[name="'+localLabel+'"]:checked').each(function(index3) {
+											$(this).attr('checked', false);
+											$(this).addClass("search_init");
+										});
+										 oTable.fnFilter('', index, true, false);
+										return false;
+									}
+							},
+							{
+								text: "Close",
+								click: function() { $(this).dialog("close"); }
+							}
+						]
     		}); 
+			
+
     		$('#'+buttonId).click(function(){
+				var target = $(this);	
     			$('#'+checkToggleDiv).dialog('open');
+				$('#'+checkToggleDiv).dialog( "widget" ).position({	my: 'top',
+					at: 'bottom',
+					of: target});
+									
     			return false;
     		}); 
     		//reset
+			/*
     		$('#'+buttonId+"Reset").button();
     		$('#'+buttonId+"Reset").click(function(){
     			$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
@@ -350,6 +377,7 @@
             	 oTable.fnFilter('', index, true, false);
     			return false;
     		}); 
+			*/
         }
 
 

@@ -412,6 +412,8 @@
 
         return this.each(function () {
 
+			if(!oTable.fnSettings().oFeatures.bFilter)
+				return;
             asInitVals = new Array();
             var sFilterRow = "tfoot tr";
             if (properties.sPlaceHolder == "head:after") {

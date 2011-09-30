@@ -33,6 +33,7 @@
 
         var oFunctionTimeout = null;
 
+		var fnOnFiltered = function(){};
 
         function fnCreateInput(oTable, regex, smart, bIsNumber) {
             var sCSSClass = "text_filter";
@@ -54,11 +55,13 @@
                 input.keyup(function () {
                     /* Filter on the column all numbers that starts with the entered value */
                     oTable.fnFilter('^' + this.value, index, true, false);
+					fnOnFiltered();
                 });
             } else {
                 input.keyup(function () {
                     /* Filter on the column (the index) of this element */
                     oTable.fnFilter(this.value, index, regex, smart);
+					fnOnFiltered();
                 });
             }
 
@@ -134,7 +137,7 @@
                     return;
 
                 oTable.fnDraw();
-
+				fnOnFiltered();
             });
 
 
@@ -203,6 +206,7 @@
 
             $('#' + sFromId + ',#' + sToId, th).change(function () {
                 oTable.fnDraw();
+				fnOnFiltered();
             });
 
 
@@ -232,6 +236,7 @@
                     $(this).addClass("search_init");
                 }
                 oTable.fnFilter(unescape($(this).val()), index);
+				fnOnFiltered();
             });
         }
 
@@ -325,6 +330,7 @@
 
                     //execute search
                     oTable.fnFilter(search, index, true, false);
+					fnOnFiltered();
                 });
             }
 
@@ -345,6 +351,7 @@
 											$(this).addClass("search_init");
 										});
 										 oTable.fnFilter('', index, true, false);
+										 fnOnFiltered();
 										return false;
 									}
 							},
@@ -357,14 +364,25 @@
 			
 
     		$('#'+buttonId).click(function(){
-				var target = $(this);	
+					
     			$('#'+checkToggleDiv).dialog('open');
+				var target = $(this);
 				$('#'+checkToggleDiv).dialog( "widget" ).position({	my: 'top',
 					at: 'bottom',
 					of: target});
 									
     			return false;
     		}); 
+			
+			var fnOnFilteredCurrent = fnOnFiltered;
+
+			fnOnFiltered = function(){
+				var target = $('#'+buttonId);
+				$('#'+checkToggleDiv).dialog( "widget" ).position({	my: 'top',
+					at: 'bottom',
+					of: target});
+				fnOnFilteredCurrent();
+			};
     		//reset
 			/*
     		$('#'+buttonId+"Reset").button();

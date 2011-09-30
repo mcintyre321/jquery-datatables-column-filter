@@ -257,7 +257,7 @@
 
         function fnCreateSelect(oTable, aData) {
             if(aData == null)
-              aData = _fnGetColumnValues( oTable.fnSettings(), 0, true, true, true);
+              aData = _fnGetColumnValues( oTable.fnSettings(), i, true, true, true);
             var index = i;
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
 
@@ -287,7 +287,7 @@
         function fnCreateCheckbox(oTable, aData) {
         
             if(aData == null)
-              aData = _fnGetColumnValues( oTable.fnSettings(), 0, true, true, true);
+              aData = _fnGetColumnValues( oTable.fnSettings(), i, true, true, true);
             var index = i;
 
             var r = '', j, iLen = aData.length;

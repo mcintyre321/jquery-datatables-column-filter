@@ -61,7 +61,7 @@
            
            for (var i=0,c=aiRows.length; i<c; i++) {
               iRow = aiRows[i];
-              var aData = this.fnGetData(iRow);
+              var aData = oTable.fnGetData(iRow);
               var sValue = aData[iColumn];
               
               // ignore empty values?

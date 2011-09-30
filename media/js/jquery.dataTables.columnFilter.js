@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.2.9
+* Version:     1.3.0
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -256,6 +256,8 @@
 
 
         function fnCreateSelect(oTable, aData) {
+            if(aData == null)
+              aData = _fnGetColumnValues( oTable.fnSettings(), 0, true, true, true);
             var index = i;
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
 

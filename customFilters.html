@@ -25,9 +25,10 @@ $(document).ready(function(){
      $('#example').dataTable()
 		  .columnFilter({
 			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
-				     { type: "select" },
+				     { type: "text" },
 				     null,
-				     { type: "number" }
+				     { type: "number" },
+             { type: "select" }    
 				]
 
 		});

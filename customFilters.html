@@ -72,7 +72,7 @@ $(document).ready(function(){
 								<li>Date range filters</li>
 								<li>Number range filters</li>
 							</ul>
-				In the column filter initialization parameter you can pass an array where are defined types of the filters that will be applied in the columns, if you pass null as a value, filter will not be applied. Also if number of the elements in the array is less than the number of the columns in the table, columns that do not have matching section will not have filter. In this example is shown how you can combine text, number, select and no filters.
+				In the column filter initialization parameter you can pass an array where are defined types of the filters that will be applied in the columns, if you pass null as a value, filter will not be applied. Also if number of the elements in the array is less than the number of the columns in the table, columns that do not have matching section will not have filter. In this example is shown how you can combine text, number, select (with explicit source and auto generated from the column values) and no filters.
 			</p>
 
 			
@@ -586,7 +586,8 @@ $(document).ready(function(){
 			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
 				     { type: "text" },
 				     null,
-				     { type: "number" }
+				     { type: "number" },
+             { type: "select" }
 				]
 
 		});

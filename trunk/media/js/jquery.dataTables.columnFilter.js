@@ -33,7 +33,49 @@
 
         var oFunctionTimeout = null;
 
-		var fnOnFiltered = function(){};
+        var fnOnFiltered = function(){};
+      
+        function _fnGetColumnValues( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+           // check that we have a column id
+           if ( typeof iColumn == "undefined" ) return new Array();
+           
+           // by default we only wany unique data
+           if ( typeof bUnique == "undefined" ) bUnique = true;
+           
+           // by default we do want to only look at filtered data
+           if ( typeof bFiltered == "undefined" ) bFiltered = true;
+           
+           // by default we do not wany to include empty values
+           if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
+           
+           // list of rows which we're going to loop through
+           var aiRows;
+           
+           // use only filtered rows
+           if (bFiltered == true) aiRows = oSettings.aiDisplay; 
+           // use all rows
+           else aiRows = oSettings.aiDisplayMaster; // all row numbers
+        
+           // set up data array	
+           var asResultData = new Array();
+           
+           for (var i=0,c=aiRows.length; i<c; i++) {
+              iRow = aiRows[i];
+              var aData = this.fnGetData(iRow);
+              var sValue = aData[iColumn];
+              
+              // ignore empty values?
+              if (bIgnoreEmpty == true && sValue.length == 0) continue;
+        
+              // ignore unique values?
+              else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+              
+              // else push the value onto the result data array
+              else asResultData.push(sValue);
+           }
+           
+           return asResultData;
+        }
 
         function fnCreateInput(oTable, regex, smart, bIsNumber) {
             var sCSSClass = "text_filter";
@@ -241,12 +283,15 @@
         }
 
         function fnCreateCheckbox(oTable, aData) {
+        
+            if(aData == null)
+              aData = _fnGetColumnValues( oTable.fnSettings(), 0, true, true, true);
             var index = i;
 
             var r = '', j, iLen = aData.length;
 
             //clean the string
-            var localLabel= label.replace('%','Perc').replace("&","AND").replace("$","DOL").replace("£","STERL").replace("@","AT").replace(/\s/g,"_");
+            var localLabel= label.replace('%','Perc').replace("&","AND").replace("$","DOL").replace("Â£","STERL").replace("@","AT").replace(/\s/g,"_");
             localLabel= localLabel.replace(/[^a-zA-Z 0-9]+/g,'');
             //clean the string
             

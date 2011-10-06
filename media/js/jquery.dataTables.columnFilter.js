@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.3.1
+* Version:     1.3.2
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -579,7 +579,14 @@
                     aoColumn = properties.aoColumns[i];
                 }
                 label = $(this).text(); //"Search by " + $(this).text();
-                th = $($(this)[0]);
+                if(aoColumn.sSelector == null)
+					th = $($(this)[0]);
+				else
+					{th = $(aoColumn.sSelector);
+						if(th.length == 0)
+							th = $($(this)[0]);
+					}
+					
                 if (aoColumn != null) {
                     if (aoColumn.sRangeFormat != null)
                         sRangeFormat = aoColumn.sRangeFormat;
@@ -589,11 +596,7 @@
                         case "number":
                             fnCreateInput(oTable, true, false, true);
                             break;
-                        case "text":
-                            bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
-                            bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
-                            fnCreateInput(oTable, bRegex, bSmart, false);
-                            break;
+
                         case "select":
                             fnCreateSelect(oTable, aoColumn.values);
                             break;
@@ -606,7 +609,11 @@
                         case "checkbox":
                             fnCreateCheckbox(oTable, aoColumn.values);
                             break;
+                        case "text":
                         default:
+                            bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
+                            bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
+                            fnCreateInput(oTable, bRegex, bSmart, false);
                             break;
 
                     }

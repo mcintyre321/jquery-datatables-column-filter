@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
 		
-		<title>Using DataTable with column filter plugin - Basic Example</title>
+		<title>Using DataTable with column filter plugin - Place filter in the external form</title>
 		<style type="text/css" title="currentStyle">
 			@import "media/css/demo_page.css";
 			@import "media/css/demo_table.css";
@@ -22,7 +22,15 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				$('#example').dataTable().columnFilter();
+				$('#example').dataTable()
+							.columnFilter({aoColumns:[
+								{ type:"select", sSelector: "#renderingEngineFilter" },
+								{ sSelector: "#browserFilter" },
+								{ sSelector: "#platformsFilter" },
+								{ type:"number-range", sSelector: "#engineVersionFilter" },
+								{ type:"select", values : ["A", "B", "C"], sSelector: "#cssGradeFilter" }
+								]}
+							);
 				
 			} );
 		</script>
@@ -51,12 +59,13 @@
 			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
 			<div class="full_width big">
 
-				JQuery DataTable Column Filter - Default Example
+				JQuery DataTable Column Filter - External Form
 			</div>
 			
 			<h1>Preamble</h1>
 			<p>
-				DataTables ColumnFilter plugin add filtering boxes into the table footer. 
+				Filtering elements can be placed outside the table. You can define placeholders where each filtering element should be injected
+				(e.g. external form or table).
 			</p>
 
 			
@@ -65,10 +74,36 @@
 			
 			<h1>Live example</h1>
 
-
-
-
-
+		<table cellspacing="0" cellpadding="0" border="0" class="display" ID="Table1">
+			<thead>
+			<tr>
+				<th>Column</th>
+				<th>Filter</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr id="filter_global">
+					<td align="center">Rendering engine</td>
+					<td align="center" id="renderingEngineFilter"></td>
+				</tr>
+				<tr id="filter_col1">
+					<td align="center">Browser</td>
+					<td align="center" id="browserFilter"></td>
+				</tr>
+				<tr id="filter_col2">
+					<td align="center">Platform(s)</td>
+					<td align="center" id="platformsFilter"></td>
+				</tr>
+				<tr id="filter_col3">
+					<td align="center">Engine version</td>
+					<td align="center" id="engineVersionFilter"></td>
+				</tr>
+				<tr id="filter_col4">
+					<td align="center">CSS grade</td>
+					<td align="center" id="cssGradeFilter"></td>
+				</tr>
+			</tbody>
+		</table>
 
 
 			<div id="demo">
@@ -556,31 +591,32 @@
 			</div>
 			<div class="spacer"></div>
 
-			
-			
 
 			
 			<h1>Initialization code</h1>
-			<p>Initialization code is very simple. You just need to add columnFilter() call to the DataTable instance. By default 
-			filters for the text searches will be added to each footer cell.</p>
-			<pre>$(document).ready( function () {
-		$('#example').dataTable().columnFilter();
-}
-	</pre>
-			<h1>Additional HTML code</h1>
-	
-	<p>In the default mode you will need to have a valid table footer in the table as shown in the following example:</p>
-<pre>
-	&lt;tfoot&gt;
-		&lt;tr&gt;
-			&lt;th&gt;Rendering engine&lt;/th&gt;
-			&lt;th&gt;Browser&lt;/th&gt;
-			&lt;th&gt;Platform(s)&lt;/th&gt;
-			&lt;th&gt;Engine version&lt;/th&gt;
-			&lt;th&gt;CSS grade&lt;/th&gt;
-		&lt;/tr&gt;
-	&lt;/tfoot&gt;
+			<p>First you will need to define placeholder elements where filter elements will be placed.</p>
+			
+			<pre class="brush: xml;">
+	&lt;p id=&quot;renderingEngineFilter&quot;&gt;&lt;/p&gt;
+	&lt;p id=&quot;browserFilter&quot;&gt;&lt;/p&gt;
+	&lt;p id=&quot;platformsFilter&quot;&gt;&lt;/p&gt;
+	&lt;p id=&quot;engineVersionFilter&quot;&gt;&lt;/p&gt;
+	&lt;p id=&quot;cssGradeFilter&quot;&gt;&lt;/p&gt;
 </pre>
+			<p>Then, for each column you should put selector that defines where in the page will be placed filtering element.
+			An example where selectors are added as JQuery id selectors is shown in the script below:</p>
+			<pre class="brush: js;">
+	$('#example').dataTable()
+			.columnFilter({aoColumns:[
+				{ sSelector: "#renderingEngineFilter", type:"select"  },
+				{ sSelector: "#browserFilter" },
+				{ sSelector: "#platformsFilter" },
+				{ sSelector: "#engineVersionFilter", type:"number-range" },
+				{ sSelector: "#cssGradeFilter", type:"select", values : ["A", "B", "C"] }
+				]}
+			);
+	</pre>
+			
 			
 
 
@@ -593,7 +629,7 @@
 				<li><a href="numberRange.html">Number ranges</a></li>
 				<li><a href="ajaxSource.html">Ajax source filtering</a></li>
 				<li><a href="serverSide.html">Server-side filtering</a></li>
-		                <li><a href="regex.html">Regular expression filtering</a></li>
+		        	<li><a href="regex.html">Regular expression filtering</a></li>
 		        	<li><a href="external.html">Filtering via external form</a></li>
 			</ul>
 			

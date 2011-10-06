@@ -1,6 +1,6 @@
 /*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.3.0
+* Version:     1.3.1
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -36,6 +36,15 @@
         var fnOnFiltered = function(){};
       
         function _fnGetColumnValues( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+			///<summary>
+			///Return values in the column
+			///</summary>
+			///<param name="oSettings" type="Object">DataTables settings</param>
+			///<param name="iColumn" type="int">Id of the column</param>
+			///<param name="bUnique" type="bool">Return only distinct values</param>
+			///<param name="bFiltered" type="bool">Return values only from the filtered rows</param>
+			///<param name="bIgnoreEmpty" type="bool">Ignore empty cells</param>
+
            // check that we have a column id
            if ( typeof iColumn == "undefined" ) return new Array();
            
@@ -254,7 +263,7 @@
 
         }
 
-
+/*
         function fnCreateSelect(oTable, aData) {
             if(aData == null)
               aData = _fnGetColumnValues( oTable.fnSettings(), i, true, true, true);
@@ -284,6 +293,72 @@
             });
         }
 
+
+*/
+
+         function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel)
+         {
+			if(aData==null)
+				aData = _fnGetColumnValues( oTable.fnSettings(), iColumn, true, false, true);
+            var index = iColumn;
+            var r = '<select class="search_init select_filter"><option value="" class="search_init">' + sLabel + '</option>';
+            var j = 0;
+            var iLen = aData.length;
+            for (j = 0; j < iLen; j++) {
+                if (typeof (aData[j]) != 'object') {
+                    r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
+                }
+                else {
+                    r += '<option value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
+                }
+            }
+             
+            var select = $(r + '</select>');
+            nTh.html(select);
+            nTh.wrapInner('<span class="filterColumn filter_select" />');
+            select.change(function () {
+                //var val = $(this).val();
+                if ($(this).val() != "") {
+                    $(this).removeClass("search_init");
+                } else {
+                    $(this).addClass("search_init");
+                }
+                oTable.fnFilter(unescape($(this).val()), iColumn);
+				fnOnFiltered();
+            });
+		}
+
+         function fnCreateSelect(oTable, aData) {
+             var oSettings = oTable.fnSettings();
+             if(aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+                 // Add a function to the draw callback, which will check for the Ajax data having 
+                 // been loaded. Use a closure for the individual column elements that are used to 
+                 // built the column filter, since 'i' and 'th' (etc) are locally "global".
+                 oSettings.aoDrawCallback.push( {
+                     "fn": (function(iColumn, nTh, sLabel) {
+                         return function () {
+                             // Only rebuild the select on the second draw - i.e. when the Ajax
+                             // data has been loaded.
+                             if ( oSettings.iDraw == 2 && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+                                 return fnCreateColumnSelect(oTable, null, iColumn, nTh, sLabel);
+                             }
+                         };
+                     })(i, th, label),
+                     "sName": "column_filter_"+i
+                 } );
+             }
+             // Regardless of the Ajax state, build the select on first pass
+             fnCreateColumnSelect(oTable, aData, i, th, label);
+             
+             /*
+            var fnOnFilteredCurrent = fnOnFiltered;
+			fnOnFiltered = function(){
+				fnCreateColumnSelect(oTable, aData, i, th, label);
+				fnOnFilteredCurrent();
+			};*/
+			
+         }
+         
         function fnCreateCheckbox(oTable, aData) {
         
             if(aData == null)

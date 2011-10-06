@@ -25,14 +25,23 @@
            			$('#example').dataTable({
                                       "bProcessing": true,
                                       "bServerSide": true,
-                                      "sAjaxSource": "server_processing.js"
-                                      
+                                      //"sAjaxSource": "server_processing.js"
+                                       "sAjaxSource": "http://datatables.net/release-datatables/examples/server_side/scripts/jsonp.php",
+        "fnServerData": function( sUrl, aoData, fnCallback ) {
+            $.ajax( {
+                "url": sUrl,
+                "data": aoData,
+                "success": fnCallback,
+                "dataType": "jsonp",
+                "cache": false
+            } );
+        }
                                     }
                                     ).columnFilter({
 			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
 				     { type: "text" },
-				     { type: "number-range" },
-				     { type: "number-range" }
+				     { type: "text" },
+				     { type: "text" }
 				]
 
 		});
@@ -68,12 +77,16 @@
 			
 			<h1>Preamble</h1>
 			<p>
-				DataTables ColumnFilter add-in works in the Server-side mode. Live example below is configured to use serer-side
-				processing code. Note that this example does not perform filtering because on the google code site are not hosted
-				php fles where can be implemented server side processing. However, if you see request trace in FireBug you will see
-				that filtering requests are sent to the server side.
+				DataTables ColumnFilter add-in works in the Server-side mode. Live example below is configured to use server-side
+				processing code. On the live demo site is used JSONP processing because live server processing page is placed on the DataTables site. 
 			</p>
-
+			<p>
+				
+				Note that in the server-side mode you must define values for the select list in the dropdown - autobuild will not work because 
+				in the column are not placed all values that can be used for filtering. Also, if you put the range filters in the columns you
+				start and end values will be sent in the start~end format. You will need to parse it on the server-side and return filtered
+				informaiton back to plugin.
+			</p>
 			
 	
 			
@@ -131,6 +144,7 @@
 				<li><a href="customFilters.html">Custom filters</a></li>
 				<li><a href="dateRange.html">Date ranges</a></li>
 				<li><a href="numberRange.html">Number ranges</a></li>
+				<li><a href="ajaxSource.html">Ajax source filtering</a></li>
 				<li><a href="serverSide.html">Server-side filtering</a></li>
 		                <li><a href="regex.html">Regular expression filtering</a></li>
 			</ul>

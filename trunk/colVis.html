@@ -28,8 +28,9 @@ $(document).ready(function(){
 		  .columnFilter({
 			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
 				     { type: "text" },
-				     null,
-				     { type: "number" }
+				     { type: "text" },
+				     { type: "number-range" },
+				     { type: "select" }
 				]
 
 		});

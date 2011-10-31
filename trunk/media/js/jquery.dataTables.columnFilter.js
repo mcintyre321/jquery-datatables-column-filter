@@ -1,6 +1,6 @@
-/*
+﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.3.2
+* Version:     1.4.0.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -33,57 +33,66 @@
 
         var oFunctionTimeout = null;
 
-        var fnOnFiltered = function(){};
-      
-        function _fnGetColumnValues( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
-			///<summary>
-			///Return values in the column
-			///</summary>
-			///<param name="oSettings" type="Object">DataTables settings</param>
-			///<param name="iColumn" type="int">Id of the column</param>
-			///<param name="bUnique" type="bool">Return only distinct values</param>
-			///<param name="bFiltered" type="bool">Return values only from the filtered rows</param>
-			///<param name="bIgnoreEmpty" type="bool">Ignore empty cells</param>
+        var fnOnFiltered = function () { };
 
-           // check that we have a column id
-           if ( typeof iColumn == "undefined" ) return new Array();
-           
-           // by default we only wany unique data
-           if ( typeof bUnique == "undefined" ) bUnique = true;
-           
-           // by default we do want to only look at filtered data
-           if ( typeof bFiltered == "undefined" ) bFiltered = true;
-           
-           // by default we do not wany to include empty values
-           if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
-           
-           // list of rows which we're going to loop through
-           var aiRows;
-           
-           // use only filtered rows
-           if (bFiltered == true) aiRows = oSettings.aiDisplay; 
-           // use all rows
-           else aiRows = oSettings.aiDisplayMaster; // all row numbers
-        
-           // set up data array	
-           var asResultData = new Array();
-           
-           for (var i=0,c=aiRows.length; i<c; i++) {
-              iRow = aiRows[i];
-              var aData = oTable.fnGetData(iRow);
-              var sValue = aData[iColumn];
-              
-              // ignore empty values?
-              if (bIgnoreEmpty == true && sValue.length == 0) continue;
-        
-              // ignore unique values?
-              else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
-              
-              // else push the value onto the result data array
-              else asResultData.push(sValue);
-           }
-           
-           return asResultData;
+        function _fnGetColumnValues(oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty) {
+            ///<summary>
+            ///Return values in the column
+            ///</summary>
+            ///<param name="oSettings" type="Object">DataTables settings</param>
+            ///<param name="iColumn" type="int">Id of the column</param>
+            ///<param name="bUnique" type="bool">Return only distinct values</param>
+            ///<param name="bFiltered" type="bool">Return values only from the filtered rows</param>
+            ///<param name="bIgnoreEmpty" type="bool">Ignore empty cells</param>
+
+            // check that we have a column id
+            if (typeof iColumn == "undefined") return new Array();
+
+            // by default we only wany unique data
+            if (typeof bUnique == "undefined") bUnique = true;
+
+            // by default we do want to only look at filtered data
+            if (typeof bFiltered == "undefined") bFiltered = true;
+
+            // by default we do not wany to include empty values
+            if (typeof bIgnoreEmpty == "undefined") bIgnoreEmpty = true;
+
+            // list of rows which we're going to loop through
+            var aiRows;
+
+            // use only filtered rows
+            if (bFiltered == true) aiRows = oSettings.aiDisplay;
+            // use all rows
+            else aiRows = oSettings.aiDisplayMaster; // all row numbers
+
+            // set up data array	
+            var asResultData = new Array();
+
+            for (var i = 0, c = aiRows.length; i < c; i++) {
+                iRow = aiRows[i];
+                var aData = oTable.fnGetData(iRow);
+                var sValue = aData[iColumn];
+
+                // ignore empty values?
+                if (bIgnoreEmpty == true && sValue.length == 0) continue;
+
+                // ignore unique values?
+                else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+
+                // else push the value onto the result data array
+                else asResultData.push(sValue);
+            }
+
+            return asResultData;
+        }
+
+        function _fnColumnIndex(iColumnIndex) {
+            if (properties.bUseColVis)
+                return iColumnIndex;
+            else
+                return oTable.fnSettings().oApi._fnVisibleToColumnIndex(oTable.fnSettings(), iColumnIndex);
+            //return iColumnIndex;
+            //return oTable.fnSettings().oApi._fnColumnIndexToVisible(oTable.fnSettings(), iColumnIndex);
         }
 
         function fnCreateInput(oTable, regex, smart, bIsNumber) {
@@ -105,14 +114,14 @@
             if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
                 input.keyup(function () {
                     /* Filter on the column all numbers that starts with the entered value */
-                    oTable.fnFilter('^' + this.value, index, true, false);
-					fnOnFiltered();
+                    oTable.fnFilter('^' + this.value, _fnColumnIndex(index), true, false);//Issue 37
+                    fnOnFiltered();
                 });
             } else {
                 input.keyup(function () {
                     /* Filter on the column (the index) of this element */
-                    oTable.fnFilter(this.value, index, regex, smart);
-					fnOnFiltered();
+                    oTable.fnFilter(this.value, _fnColumnIndex(index), regex, smart);//Issue 37
+                    fnOnFiltered();
                 });
             }
 
@@ -160,7 +169,7 @@
 	                return true;
 	            var iMin = document.getElementById(sFromId).value * 1;
 	            var iMax = document.getElementById(sToId).value * 1;
-	            var iValue = aData[index] == "-" ? 0 : aData[index] * 1;
+	            var iValue = aData[_fnColumnIndex(index)] == "-" ? 0 : aData[_fnColumnIndex(index)] * 1;
 	            if (iMin == "" && iMax == "") {
 	                return true;
 	            }
@@ -188,7 +197,7 @@
                     return;
 
                 oTable.fnDraw();
-				fnOnFiltered();
+                fnOnFiltered();
             });
 
 
@@ -231,9 +240,9 @@
 
 	            var dCellDate = null;
 	            try {
-	                if (aData[index] == null || aData[index] == "")
+	                if (aData[_fnColumnIndex(index)] == null || aData[_fnColumnIndex(index)] == "")
 	                    return false;
-	                dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[index]);
+	                dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[_fnColumnIndex(index)]);
 	            } catch (ex) {
 	                return false;
 	            }
@@ -257,49 +266,15 @@
 
             $('#' + sFromId + ',#' + sToId, th).change(function () {
                 oTable.fnDraw();
-				fnOnFiltered();
+                fnOnFiltered();
             });
 
 
         }
 
-/*
-        function fnCreateSelect(oTable, aData) {
-            if(aData == null)
-              aData = _fnGetColumnValues( oTable.fnSettings(), i, true, true, true);
-            var index = i;
-            var r = '<select class="search_init select_filter"><option value="" class="search_init">' + label + '</option>', j, iLen = aData.length;
-
-            for (j = 0; j < iLen; j++) {
-                if (typeof (aData[j]) != 'object') {
-                    r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
-                }
-                else {
-                    r += '<option value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
-                }
-            }
-            var select = $(r + '</select>');
-            th.html(select);
-            th.wrapInner('<span class="filterColumn filter_select" />');
-            select.change(function () {
-                //var val = $(this).val();
-                if ($(this).val() != "") {
-                    $(this).removeClass("search_init");
-                } else {
-                    $(this).addClass("search_init");
-                }
-                oTable.fnFilter(unescape($(this).val()), index);
-				fnOnFiltered();
-            });
-        }
-
-
-*/
-
-         function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel)
-         {
-			if(aData==null)
-				aData = _fnGetColumnValues( oTable.fnSettings(), iColumn, true, false, true);
+        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel) {
+            if (aData == null)
+                aData = _fnGetColumnValues(oTable.fnSettings(), iColumn, true, false, true);
             var index = iColumn;
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + sLabel + '</option>';
             var j = 0;
@@ -312,7 +287,7 @@
                     r += '<option value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
                 }
             }
-             
+
             var select = $(r + '</select>');
             nTh.html(select);
             nTh.wrapInner('<span class="filterColumn filter_select" />');
@@ -323,100 +298,100 @@
                 } else {
                     $(this).addClass("search_init");
                 }
-                oTable.fnFilter(unescape($(this).val()), iColumn);
-				fnOnFiltered();
+                oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 37
+                fnOnFiltered();
             });
-		}
+        }
 
-         function fnCreateSelect(oTable, aData) {
-             var oSettings = oTable.fnSettings();
-             if(aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
-                 // Add a function to the draw callback, which will check for the Ajax data having 
-                 // been loaded. Use a closure for the individual column elements that are used to 
-                 // built the column filter, since 'i' and 'th' (etc) are locally "global".
-                 oSettings.aoDrawCallback.push( {
-                     "fn": (function(iColumn, nTh, sLabel) {
-                         return function () {
-                             // Only rebuild the select on the second draw - i.e. when the Ajax
-                             // data has been loaded.
-                             if ( oSettings.iDraw == 2 && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
-                                 return fnCreateColumnSelect(oTable, null, iColumn, nTh, sLabel);
-                             }
-                         };
-                     })(i, th, label),
-                     "sName": "column_filter_"+i
-                 } );
-             }
-             // Regardless of the Ajax state, build the select on first pass
-             fnCreateColumnSelect(oTable, aData, i, th, label);
-             
-             /*
+        function fnCreateSelect(oTable, aData) {
+            var oSettings = oTable.fnSettings();
+            if (aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+                // Add a function to the draw callback, which will check for the Ajax data having 
+                // been loaded. Use a closure for the individual column elements that are used to 
+                // built the column filter, since 'i' and 'th' (etc) are locally "global".
+                oSettings.aoDrawCallback.push({
+                    "fn": (function (iColumn, nTh, sLabel) {
+                        return function () {
+                            // Only rebuild the select on the second draw - i.e. when the Ajax
+                            // data has been loaded.
+                            if (oSettings.iDraw == 2 && oSettings.sAjaxSource != null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+                                return fnCreateColumnSelect(oTable, null, _fnColumnIndex(iColumn), nTh, sLabel); //Issue 37
+                            }
+                        };
+                    })(i, th, label),
+                    "sName": "column_filter_" + i
+                });
+            }
+            // Regardless of the Ajax state, build the select on first pass
+            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label); //Issue 37
+
+            /*
             var fnOnFilteredCurrent = fnOnFiltered;
-			fnOnFiltered = function(){
-				fnCreateColumnSelect(oTable, aData, i, th, label);
-				fnOnFilteredCurrent();
-			};*/
-			
-         }
-         
+            fnOnFiltered = function(){
+            fnCreateColumnSelect(oTable, aData, i, th, label);
+            fnOnFilteredCurrent();
+            };*/
+
+        }
+
         function fnCreateCheckbox(oTable, aData) {
-        
-            if(aData == null)
-              aData = _fnGetColumnValues( oTable.fnSettings(), i, true, true, true);
+
+            if (aData == null)
+                aData = _fnGetColumnValues(oTable.fnSettings(), i, true, true, true);
             var index = i;
 
             var r = '', j, iLen = aData.length;
 
             //clean the string
-            var localLabel= label.replace('%','Perc').replace("&","AND").replace("$","DOL").replace("£","STERL").replace("@","AT").replace(/\s/g,"_");
-            localLabel= localLabel.replace(/[^a-zA-Z 0-9]+/g,'');
+            var localLabel = label.replace('%', 'Perc').replace("&", "AND").replace("$", "DOL").replace("£", "STERL").replace("@", "AT").replace(/\s/g, "_");
+            localLabel = localLabel.replace(/[^a-zA-Z 0-9]+/g, '');
             //clean the string
-            
+
             //button label override
-            if(properties.sFilterButtonText != null || properties.sFilterButtonText != undefined){
-           	 labelBtn = properties.sFilterButtonText;
-           }else{
-           	 labelBtn = label;
-           }
+            if (properties.sFilterButtonText != null || properties.sFilterButtonText != undefined) {
+                labelBtn = properties.sFilterButtonText;
+            } else {
+                labelBtn = label;
+            }
 
             var relativeDivWidthToggleSize = 10;
-            var numRow = 12;//numero di checkbox per colonna
-            var numCol = Math.floor(iLen/numRow);
-            if(iLen%numRow >0){
-            	numCol = numCol +1;
+            var numRow = 12; //numero di checkbox per colonna
+            var numCol = Math.floor(iLen / numRow);
+            if (iLen % numRow > 0) {
+                numCol = numCol + 1;
             };
-            
-            //count how many column should be generated and split the div size
-            var divWidth = 100 / numCol -2;
-            
-            var divWidthToggle = relativeDivWidthToggleSize * numCol;
-            
-            if(numCol == 1){
-            	divWidth = 20;
-            }
-            
-            var divRowDef = '<div style="float:left; min-width: '+divWidth+'%; " >';
-            var divClose = '</div>';
-            
-            var uniqueId = oTable.attr("id")+localLabel;
-            var buttonId = "chkBtnOpen"+uniqueId;
-            var checkToggleDiv = uniqueId+"-flt-toggle";
-            r+= '<button id="'+buttonId+'" class="checkbox_filter" > '+labelBtn+'</button>'; //filter button witch open dialog
-            r+= '<div id="'+checkToggleDiv+'" '
-            	+'title="'+label+'" '
-            	+'class="toggle-check ui-widget-content ui-corner-all"  style="width: '+(divWidthToggle)+'%; " >'; //dialog div
-            //r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
-            r+= divRowDef;
 
-             for (j = 0; j < iLen; j++) {
-            	
-            	//if last check close div
-                if(j%numRow==0 && j!=0 ){
-                    r+= divClose +  divRowDef;
+            //count how many column should be generated and split the div size
+            var divWidth = 100 / numCol - 2;
+
+            var divWidthToggle = relativeDivWidthToggleSize * numCol;
+
+            if (numCol == 1) {
+                divWidth = 20;
+            }
+
+            var divRowDef = '<div style="float:left; min-width: ' + divWidth + '%; " >';
+            var divClose = '</div>';
+
+            var uniqueId = oTable.attr("id") + localLabel;
+            var buttonId = "chkBtnOpen" + uniqueId;
+            var checkToggleDiv = uniqueId + "-flt-toggle";
+            r += '<button id="' + buttonId + '" class="checkbox_filter" > ' + labelBtn + '</button>'; //filter button witch open dialog
+            r += '<div id="' + checkToggleDiv + '" '
+            	+ 'title="' + label + '" '
+            	+ 'class="toggle-check ui-widget-content ui-corner-all"  style="width: ' + (divWidthToggle) + '%; " >'; //dialog div
+            //r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
+            r += divRowDef;
+
+            for (j = 0; j < iLen; j++) {
+
+                //if last check close div
+                if (j % numRow == 0 && j != 0) {
+                    r += divClose + divRowDef;
                 }
-                
-            	//check button
-               r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
+
+                //check button
+                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
 
                 var checkbox = $(r);
                 th.html(checkbox);
@@ -426,19 +401,19 @@
 
                     var search = '';
                     var or = '|'; //var for select checks in 'or' into the regex
-                    var resSize = $('input:checkbox[name="'+localLabel+'"]:checked').size();
+                    var resSize = $('input:checkbox[name="' + localLabel + '"]:checked').size();
                     $('input:checkbox[name="' + localLabel + '"]:checked').each(function (index) {
 
                         //search = search + ' ' + $(this).val();
-                    	//concatenation for selected checks in or
-                 		if((index==0 && resSize==1)
-                				|| (index!=0 && index == resSize-1 )){
-                			or = '';
-                		}
-                		//trim
-                		search = search.replace(/^\s+|\s+$/g,"");
-                		search = search + $(this).val() + or;
-                		or = '|';
+                        //concatenation for selected checks in or
+                        if ((index == 0 && resSize == 1)
+                				|| (index != 0 && index == resSize - 1)) {
+                            or = '';
+                        }
+                        //trim
+                        search = search.replace(/^\s+|\s+$/g, "");
+                        search = search + $(this).val() + or;
+                        or = '|';
 
                     });
 
@@ -452,72 +427,74 @@
 
                     //execute search
                     oTable.fnFilter(search, index, true, false);
-					fnOnFiltered();
+                    fnOnFiltered();
                 });
             }
 
             //filter button
-    		$('#'+buttonId).button();
-    		//dialog
-    		$('#'+checkToggleDiv).dialog({
-    			//height: 140,
-    			autoOpen: false,
-				//show: "blind",
-				hide: "blind",
-				buttons: [{
-							text: "Reset",
-							click: function(){
-										//$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
-										$('input:checkbox[name="'+localLabel+'"]:checked').each(function(index3) {
-											$(this).attr('checked', false);
-											$(this).addClass("search_init");
-										});
-										 oTable.fnFilter('', index, true, false);
-										 fnOnFiltered();
-										return false;
-									}
-							},
+            $('#' + buttonId).button();
+            //dialog
+            $('#' + checkToggleDiv).dialog({
+                //height: 140,
+                autoOpen: false,
+                //show: "blind",
+                hide: "blind",
+                buttons: [{
+                    text: "Reset",
+                    click: function () {
+                        //$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
+                        $('input:checkbox[name="' + localLabel + '"]:checked').each(function (index3) {
+                            $(this).attr('checked', false);
+                            $(this).addClass("search_init");
+                        });
+                        oTable.fnFilter('', index, true, false);
+                        fnOnFiltered();
+                        return false;
+                    }
+                },
 							{
-								text: "Close",
-								click: function() { $(this).dialog("close"); }
+							    text: "Close",
+							    click: function () { $(this).dialog("close"); }
 							}
 						]
-    		}); 
-			
+            });
 
-    		$('#'+buttonId).click(function(){
-					
-    			$('#'+checkToggleDiv).dialog('open');
-				var target = $(this);
-				$('#'+checkToggleDiv).dialog( "widget" ).position({	my: 'top',
-					at: 'bottom',
-					of: target});
-									
-    			return false;
-    		}); 
-			
-			var fnOnFilteredCurrent = fnOnFiltered;
 
-			fnOnFiltered = function(){
-				var target = $('#'+buttonId);
-				$('#'+checkToggleDiv).dialog( "widget" ).position({	my: 'top',
-					at: 'bottom',
-					of: target});
-				fnOnFilteredCurrent();
-			};
-    		//reset
-			/*
-    		$('#'+buttonId+"Reset").button();
-    		$('#'+buttonId+"Reset").click(function(){
-    			$('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
-            	$('input:checkbox[name="'+localLabel+'"]:checked').each(function(index3) {
-            		$(this).attr('checked', false);
-                    $(this).addClass("search_init");
-            	});
-            	 oTable.fnFilter('', index, true, false);
-    			return false;
-    		}); 
-			*/
+            $('#' + buttonId).click(function () {
+
+                $('#' + checkToggleDiv).dialog('open');
+                var target = $(this);
+                $('#' + checkToggleDiv).dialog("widget").position({ my: 'top',
+                    at: 'bottom',
+                    of: target
+                });
+
+                return false;
+            });
+
+            var fnOnFilteredCurrent = fnOnFiltered;
+
+            fnOnFiltered = function () {
+                var target = $('#' + buttonId);
+                $('#' + checkToggleDiv).dialog("widget").position({ my: 'top',
+                    at: 'bottom',
+                    of: target
+                });
+                fnOnFilteredCurrent();
+            };
+            //reset
+            /*
+            $('#'+buttonId+"Reset").button();
+            $('#'+buttonId+"Reset").click(function(){
+            $('#'+buttonId).removeClass("filter_selected"); //LM remove border if filter selected
+            $('input:checkbox[name="'+localLabel+'"]:checked').each(function(index3) {
+            $(this).attr('checked', false);
+            $(this).addClass("search_init");
+            });
+            oTable.fnFilter('', index, true, false);
+            return false;
+            }); 
+            */
         }
 
 
@@ -552,8 +529,8 @@
 
         return this.each(function () {
 
-			if(!oTable.fnSettings().oFeatures.bFilter)
-				return;
+            if (!oTable.fnSettings().oFeatures.bFilter)
+                return;
             asInitVals = new Array();
             var sFilterRow = "tfoot tr";
             if (properties.sPlaceHolder == "head:after") {
@@ -579,14 +556,14 @@
                     aoColumn = properties.aoColumns[i];
                 }
                 label = $(this).text(); //"Search by " + $(this).text();
-                if(aoColumn.sSelector == null)
-					th = $($(this)[0]);
-				else
-					{th = $(aoColumn.sSelector);
-						if(th.length == 0)
-							th = $($(this)[0]);
-					}
-					
+                if (aoColumn.sSelector == null)
+                    th = $($(this)[0]);
+                else {
+                    th = $(aoColumn.sSelector);
+                    if (th.length == 0)
+                        th = $($(this)[0]);
+                }
+
                 if (aoColumn != null) {
                     if (aoColumn.sRangeFormat != null)
                         sRangeFormat = aoColumn.sRangeFormat;

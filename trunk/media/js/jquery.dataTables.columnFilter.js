@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.0.
+* Version:     1.4.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011 Jovan Popovic, all rights reserved.
@@ -95,14 +95,24 @@
             //return oTable.fnSettings().oApi._fnColumnIndexToVisible(oTable.fnSettings(), iColumnIndex);
         }
 
-        function fnCreateInput(oTable, regex, smart, bIsNumber) {
+        function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength) {
             var sCSSClass = "text_filter";
             if (bIsNumber)
                 sCSSClass = "number_filter";
 
             label = label.replace(/(^\s*)|(\s*$)/g, "");
-
-            var input = $('<input type="text" class="search_init ' + sCSSClass + '" value="' + label + '"/>');
+            var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+            var search_init = 'search_init ';
+            var inputvalue = label;
+            if(currentFilter != '' && currentFilter != '^') {
+	    	if(bIsNumber && currentFilter.charAt(0) == '^')
+	    		inputvalue = currentFilter.substr(1); //ignore trailing ^
+		else
+            		inputvalue = currentFilter;
+            	search_init = '';
+            }
+            
+            var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '"/>');
             th.html(input);
             if (bIsNumber)
                 th.wrapInner('<span class="filter_column filter_number" />');
@@ -119,7 +129,29 @@
                 });
             } else {
                 input.keyup(function () {
-                    /* Filter on the column (the index) of this element */
+                	if(oTable.fnSettings().oFeatures.bServerSide && iFilterLength!=0) {
+				//If filter length is set in the server-side processing mode
+				//Check has the user entered at least iFilterLength new characters
+				
+                		var currentFilter = oTable.fnSettings().aoPreSearchCols[index].sSearch;
+                		var iLastFilterLength = $(this).data("dt-iLastFilterLength");
+				if(typeof iLastFilterLength == "undefined")
+					iLastFilterLength = 0;
+				var iCurrentFilterLength = this.value.length;
+				if(	Math.abs(iCurrentFilterLength - iLastFilterLength) < iFilterLength
+					//&& currentFilter.length == 0 //Why this?
+					)
+				{
+					//Cancel the filtering
+					return;
+				}
+				else
+				{
+					//Remember the current filter length
+					$(this).data("dt-iLastFilterLength", iCurrentFilterLength );	
+				}
+                	}
+            		/* Filter on the column (the index) of this element */
                     oTable.fnFilter(this.value, _fnColumnIndex(index), regex, smart);//Issue 37
                     fnOnFiltered();
                 });
@@ -205,7 +237,6 @@
 
 
         function fnCreateDateRangeInput(oTable) {
-
             th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
             var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
@@ -276,15 +307,21 @@
             if (aData == null)
                 aData = _fnGetColumnValues(oTable.fnSettings(), iColumn, true, false, true);
             var index = iColumn;
+            var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + sLabel + '</option>';
             var j = 0;
             var iLen = aData.length;
             for (j = 0; j < iLen; j++) {
                 if (typeof (aData[j]) != 'object') {
-                    r += '<option value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
+                	var selected = '';
+                	if(escape(aData[j]) == currentFilter) selected = 'selected '
+                    r += '<option ' + selected + ' value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
                 }
                 else {
-                    r += '<option value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
+                	var selected = '';
+                	if(escape(aData[j].value) == currentFilter) selected = 'selected '
+                    r += '<option ' + selected + 'value="' + escape(aData[j].value) + '">' + aData[j].label + '</option>';
                 }
             }
 
@@ -522,7 +559,6 @@
             iFilteringDelay: 500,
             aoColumns: null,
             sRangeFormat: "From {from} to {to}"
-
         };
 
         properties = $.extend(defaults, options);
@@ -536,6 +572,8 @@
             if (properties.sPlaceHolder == "head:after") {
                 var tr = $("thead tr:last", oTable).detach();
                 tr.prependTo($("thead", oTable));
+		/*Fixed a bug in specifying thead:after where filters were getting intermixed with sort columns even when using datatables bSortCellsTop. Changed prependTo to appendTo*/
+                //tr.appendTo($("thead", oTable)); - this does not work with numberRange.html example
                 sFilterRow = "thead tr:last";
             } else if (properties.sPlaceHolder == "head:before") {
                 var tr = $("thead tr:first", oTable).detach();
@@ -548,7 +586,8 @@
                 i = index;
                 var aoColumn = { type: "text",
                     bRegex: false,
-                    bSmart: true
+                    bSmart: true,
+                    iFilterLength: 0
                 };
                 if (properties.aoColumns != null) {
                     if (properties.aoColumns.length < i || properties.aoColumns[i] == null)
@@ -571,7 +610,7 @@
                         sRangeFormat = properties.sRangeFormat
                     switch (aoColumn.type) {
                         case "number":
-                            fnCreateInput(oTable, true, false, true);
+                            fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength);
                             break;
 
                         case "select":
@@ -590,7 +629,7 @@
                         default:
                             bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
                             bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
-                            fnCreateInput(oTable, bRegex, bSmart, false);
+                            fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength);
                             break;
 
                     }

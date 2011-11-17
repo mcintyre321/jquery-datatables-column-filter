@@ -571,14 +571,26 @@
             var sFilterRow = "tfoot tr";
             if (properties.sPlaceHolder == "head:after") {
                 var tr = $("thead tr:last", oTable).detach();
-                tr.prependTo($("thead", oTable));
-		/*Fixed a bug in specifying thead:after where filters were getting intermixed with sort columns even when using datatables bSortCellsTop. Changed prependTo to appendTo*/
-                //tr.appendTo($("thead", oTable)); - this does not work with numberRange.html example
+		if(oTable.fnSettings().bSortCellsTop)
+		{
+                	tr.appendTo($("thead", oTable));
+		}
+		else
+	    	{
+	    		tr.prependTo($("thead", oTable));
+	    	}
                 sFilterRow = "thead tr:last";
             } else if (properties.sPlaceHolder == "head:before") {
                 var tr = $("thead tr:first", oTable).detach();
                 //tr.attr("id", 1);
+				if(oTable.fnSettings().bSortCellsTop)
+				{
+                	tr.appendTo($("thead", oTable));
+				}
+				else
+				{
                 tr.prependTo($("thead", oTable));
+				}
                 sFilterRow = "thead tr:first";
             }
 

@@ -1,9 +1,9 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.1.
+* Version:     1.4.2.
 * Author:      Jovan Popovic 
 * 
-* Copyright 2011 Jovan Popovic, all rights reserved.
+* Copyright 2011-2012 Jovan Popovic, all rights reserved.
 *
 * This source file is free software, under either the GPL v2 license or a
 * BSD style license, as supplied with this software.
@@ -83,7 +83,7 @@
                 else asResultData.push(sValue);
             }
 
-            return asResultData;
+            return asResultData.sort();
         }
 
         function _fnColumnIndex(iColumnIndex) {

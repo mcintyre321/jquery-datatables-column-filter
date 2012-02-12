@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.2.
+* Version:     1.4.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -95,7 +95,7 @@
             //return oTable.fnSettings().oApi._fnColumnIndexToVisible(oTable.fnSettings(), iColumnIndex);
         }
 
-        function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength) {
+        function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength, iMaxLenght) {
             var sCSSClass = "text_filter";
             if (bIsNumber)
                 sCSSClass = "number_filter";
@@ -113,7 +113,10 @@
             }
             
             var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '"/>');
-            th.html(input);
+            if(iMaxLenght!= undefined && iMaxLenght != -1){
+	    	input.attr('maxlength', iMaxLenght);
+	    }
+	    th.html(input);
             if (bIsNumber)
                 th.wrapInner('<span class="filter_column filter_number" />');
             else
@@ -599,6 +602,7 @@
                 var aoColumn = { type: "text",
                     bRegex: false,
                     bSmart: true,
+                    iMaxLenght: -1,
                     iFilterLength: 0
                 };
                 if (properties.aoColumns != null) {
@@ -619,10 +623,10 @@
                     if (aoColumn.sRangeFormat != null)
                         sRangeFormat = aoColumn.sRangeFormat;
                     else
-                        sRangeFormat = properties.sRangeFormat
+                        sRangeFormat = properties.sRangeFormat;
                     switch (aoColumn.type) {
                         case "number":
-                            fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength);
+                            fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength, aoColumn.iMaxLenght);
                             break;
 
                         case "select":
@@ -641,7 +645,7 @@
                         default:
                             bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
                             bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
-                            fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength);
+                            fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength, aoColumn.iMaxLenght);
                             break;
 
                     }

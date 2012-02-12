@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.3.
+* Version:     1.4.4.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -625,6 +625,8 @@
                     else
                         sRangeFormat = properties.sRangeFormat;
                     switch (aoColumn.type) {
+	                    case "null":
+							break;
                         case "number":
                             fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength, aoColumn.iMaxLenght);
                             break;

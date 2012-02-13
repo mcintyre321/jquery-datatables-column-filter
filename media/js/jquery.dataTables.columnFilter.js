@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.5.
+* Version:     1.4.6.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -572,29 +572,43 @@
             if (!oTable.fnSettings().oFeatures.bFilter)
                 return;
             asInitVals = new Array();
-            var sFilterRow = "tfoot tr";
+
+
+            var oHost = oTable.fnSettings().nTFoot;
+            var sFilterRow = "tr";
+
             if (properties.sPlaceHolder == "head:after") {
-                var tr = $("thead tr:last", oTable).detach();
+                var tr = $("tr:first", oTable.fnSettings().nTHead).detach();
+                //tr.appendTo($(oTable.fnSettings().nTHead));
                 if (oTable.fnSettings().bSortCellsTop) {
-                    tr.appendTo($("thead", oTable));
+                    tr.prependTo($(oTable.fnSettings().nTHead));
+                    //tr.appendTo($("thead", oTable));
                 }
                 else {
-                    tr.prependTo($("thead", oTable));
+                    tr.appendTo($(oTable.fnSettings().nTHead));
+                    //tr.prependTo($("thead", oTable));
                 }
-                sFilterRow = "thead tr:last";
+                
+                sFilterRow = "tr:last";
+                oHost = oTable.fnSettings().nTHead;
             } else if (properties.sPlaceHolder == "head:before") {
-                var tr = $("thead tr:first", oTable).detach();
-                //tr.attr("id", 1);
+                
                 if (oTable.fnSettings().bSortCellsTop) {
-                    tr.appendTo($("thead", oTable));
+                    var tr = $("tr:first", oTable.fnSettings().nTHead).detach();
+                    tr.appendTo($(oTable.fnSettings().nTHead));
+                    
                 }
-                else {
-                    tr.prependTo($("thead", oTable));
-                }
-                sFilterRow = "thead tr:first";
+                /*else {
+                    //tr.prependTo($("thead", oTable));
+                    sFilterRow = "tr:first";
+                }*/
+
+                sFilterRow = "tr:first";
+                
+                oHost = oTable.fnSettings().nTHead;
             }
 
-            $(sFilterRow + " th", oTable).each(function (index) {
+            $(sFilterRow + " th", oHost).each(function (index) {
                 i = index;
                 var aoColumn = { type: "text",
                     bRegex: false,

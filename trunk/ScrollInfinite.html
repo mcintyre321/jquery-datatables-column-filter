@@ -26,25 +26,11 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				/*var oTable = $('#example').dataTable({
-									"bFilter": true,
-									//"sScrollY": "400px",     
-									"bPaginate": false,
-									"bInfo" : false
+				$('#example1').dataTable({
+									"bScrollInfinite": true,
+									"bScrollCollapse": true,
+									"sScrollY": "200px"
 							} )
-							.columnFilter({aoColumns: [ null,
-									{ type:  "select"},
-									{ type: "text"},
-									{ type:  "text"},
-									{ type: "select", values: [ 'A', 'B', 'C']  },
-									]
-							});
-				new FixedHeader( oTable, { "bottom": true } );*/
-				
-				
-				
-				
-				var oTable1 = $('#example1').dataTable()
 							.columnFilter({aoColumns: [ 
 									{ type:  "select"},
 									null,
@@ -53,12 +39,12 @@
 									{ type: "select", values: [ 'A', 'B', 'C']  },
 									]
 							});
-				
-				new FixedHeader( oTable1, { "bottom": true } );
-				
-	
-				
-				var oTable2 = $('#example2').dataTable()
+							
+				$('#example2').dataTable({
+									"bScrollInfinite": true,
+									"bScrollCollapse": false,
+									"sScrollY": "200px"
+							} )
 							.columnFilter({sPlaceHolder: "head:before",
 								aoColumns: [ 
 									{ type:  "select"},
@@ -69,12 +55,11 @@
 									]
 							});		
 							
-				new FixedHeader( oTable2, { "bottom": true } );
-				
-				
-				
-				
-				var oTable3 = $('#example3').dataTable()
+				$('#example3').dataTable({
+									"bScrollInfinite": true,
+									"bScrollCollapse": false,
+									"sScrollY": "200px"
+							} )
 							.columnFilter({sPlaceHolder: "head:after",
 								aoColumns: [ 
 									{ type:  "select"},
@@ -84,8 +69,6 @@
 									{ type: "select", values: [ 'A', 'B', 'C']  },
 									]
 							});	
-				new FixedHeader( oTable3, { "bottom": true } );
-
 				
 			} );
 		</script>
@@ -112,13 +95,12 @@
 		<div id="container">
 			<a href="index.html">Home</a>
 			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
-			<div class="full_width big">
+			<h1 class="full_width big">
 
-				JQuery DataTable Column Filter - Integration with fixed header plugin for datatables
-			</div>
+				JQuery DataTable Column Filter - Using scroll infinite feature of datatable
+			</h1>
 			
-			<h1>Preamble</h1>
-			<p>
+			<h1>Preamble</h1>			<p>
 				You can combine Fixed Header plugin with column filter.
 			</p>
 
@@ -126,7 +108,6 @@
 	
 			
 			
-			<h1>Live example</h1>
 
 
 
@@ -134,10 +115,7 @@
 
 
 
-			<div id="demo">
 
-			
-			
 			<div id="demo">
 <h2>Filter placed in the footer row</h2>
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example1">
@@ -1598,37 +1576,17 @@
 	</tbody>
 </table>
 
-			
+
+
+
 			</div>
 			<div class="spacer"></div>
 
 			
-			
-
-			
-			<h1>Initialization code</h1>
-			<p>Initialization code is shown in the example below. Parameters for the columnFilter and FixedHeader are optional.</p>
-			<pre>
-
-var oTable = $('#example').dataTable()
-			.columnFilter({aoColumns: [ null,
-										{ type:  "select"},
-                                      	{ type: "text"},
-                                    	{ type:  "text"}
-										{ type: "select", values: [ 'A', 'B', 'C']  },
-                                		]
-                        		});
-new FixedHeader( oTable, { "bottom": true } );
-				
-
-	
-	</pre>
-
-			
 			<div id="footer" style="text-align:center;">
 				<span style="font-size:10px;">
-					DataTables Column Filter Add-on &copy; Jovan Popovic 2011.<br>
-					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
+					DataTables Column Filter Add-on &copy; Jovan Popovic 2011-2012.<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2012<br>
 				</span>
 			</div>
 		</div>

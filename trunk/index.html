@@ -20,6 +20,7 @@
 			.dataTables_info { padding-top: 0; }
 			.dataTables_paginate { padding-top: 0; }
 			.css_right { float: right; }
+			tfoot th input { width: 90% }
 			#example_wrapper .fg-toolbar { font-size: 0.8em }
 			#theme_links span { float: left; padding: 2px 10px; }
 		</style>
@@ -31,7 +32,10 @@
 		<script type="text/javascript" src="media/js/jquery.dataTables.columnFilter.js"></script>
 		<script type="text/javascript">
 $(document).ready(function(){
-     $('#example').dataTable()
+     $('#example').dataTable({
+             bJQueryUI: true,
+			 "sPaginationType": "full_numbers"
+})
 		  .columnFilter({
 			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
 				     { type: "text" },
@@ -102,11 +106,13 @@ $(document).ready(function(){
 								<li>List filters</li>
 								<li>Date range filters</li>
 								<li>Number range filters</li>
+								<li>Form filters</li>
 							</ul>
 						</li>
 
 						<li>It's free!</li>
-						<li>Full integration with the DataTables plugin</li>
+						<li>Full integration with the DataTables 1.9 plugin</li>
+						<li>Requires JQuery 1.6+</li>
 
 					</ul>
 				</div>

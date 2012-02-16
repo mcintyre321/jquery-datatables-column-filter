@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.6.
+* Version:     1.4.7.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -200,6 +200,9 @@
             oTable.dataTableExt.afnFiltering.push(
 	        function (oSettings, aData, iDataIndex) {
 	            if (oTable.attr("id") != oSettings.sTableId)
+	                return true;
+	            // Try to handle missing nodes more gracefully
+	            if (document.getElementById(sFromId) == null)
 	                return true;
 	            var iMin = document.getElementById(sFromId).value * 1;
 	            var iMax = document.getElementById(sToId).value * 1;
@@ -573,9 +576,10 @@
                 return;
             asInitVals = new Array();
 
+            aoFilterCells = oTable.fnSettings().aoFooter[0];
 
-            var oHost = oTable.fnSettings().nTFoot;
-            var sFilterRow = "tr";
+            var oHost = oTable.fnSettings().nTFoot; //Before fix for ColVis
+            var sFilterRow = "tr"; //Before fix for ColVis
 
             if (properties.sPlaceHolder == "head:after") {
                 var tr = $("tr:first", oTable.fnSettings().nTHead).detach();
@@ -583,32 +587,40 @@
                 if (oTable.fnSettings().bSortCellsTop) {
                     tr.prependTo($(oTable.fnSettings().nTHead));
                     //tr.appendTo($("thead", oTable));
+                    aoFilterCells = oTable.fnSettings().aoHeader[1];
                 }
                 else {
                     tr.appendTo($(oTable.fnSettings().nTHead));
                     //tr.prependTo($("thead", oTable));
+                    aoFilterCells = oTable.fnSettings().aoHeader[0];
                 }
-                
+
                 sFilterRow = "tr:last";
                 oHost = oTable.fnSettings().nTHead;
+
             } else if (properties.sPlaceHolder == "head:before") {
-                
+
                 if (oTable.fnSettings().bSortCellsTop) {
                     var tr = $("tr:first", oTable.fnSettings().nTHead).detach();
                     tr.appendTo($(oTable.fnSettings().nTHead));
-                    
+                    aoFilterCells = oTable.fnSettings().aoHeader[1];
+                } else {
+                    aoFilterCells = oTable.fnSettings().aoHeader[0];
                 }
                 /*else {
-                    //tr.prependTo($("thead", oTable));
-                    sFilterRow = "tr:first";
+                //tr.prependTo($("thead", oTable));
+                sFilterRow = "tr:first";
                 }*/
 
                 sFilterRow = "tr:first";
-                
+
                 oHost = oTable.fnSettings().nTHead;
+
+                
             }
 
-            $(sFilterRow + " th", oHost).each(function (index) {
+            //$(sFilterRow + " th", oHost).each(function (index) {//bug with ColVis
+            $(aoFilterCells).each(function (index) {//fix for ColVis
                 i = index;
                 var aoColumn = { type: "text",
                     bRegex: false,
@@ -621,13 +633,16 @@
                         return;
                     aoColumn = properties.aoColumns[i];
                 }
-                label = $(this).text(); //"Search by " + $(this).text();
-                if (aoColumn.sSelector == null)
-                    th = $($(this)[0]);
+                //label = $(this).text(); //Before fix for ColVis
+                label = $($(this)[0].cell).text(); //Fix for ColVis
+                if (aoColumn.sSelector == null) {
+                    //th = $($(this)[0]);//Before fix for ColVis
+                    th = $($(this)[0].cell); //Fix for ColVis
+                }
                 else {
                     th = $(aoColumn.sSelector);
                     if (th.length == 0)
-                        th = $($(this)[0]);
+                        th = $($(this)[0].cell);
                 }
 
                 if (aoColumn != null) {
@@ -641,7 +656,6 @@
                         case "number":
                             fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength, aoColumn.iMaxLenght);
                             break;
-
                         case "select":
                             if (aoColumn.bRegex != true)
                                 aoColumn.bRegex = false;
@@ -704,24 +718,6 @@
                             fnCallback(json)
                         });
                     }
-
-                    /*
-                    if (fnServerDataOriginal != null) {
-                    if (properties.iDelay != 0) {
-                    if (oFunctionTimeout != null)
-                    window.clearTimeout(oFunctionTimeout);
-                    oFunctionTimeout = window.setTimeout(function () {
-                    fnServerDataOriginal(sSource, aoData, fnCallback);
-                    }, properties.iDelay);
-                    } else {
-                    fnServerDataOriginal(sSource, aoData, fnCallback);
-                    }
-                    }
-                    else
-                    $.getJSON(sSource, aoData, function (json) {
-                    fnCallback(json)
-                    });
-                    */
                 };
 
             }

@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.7.
+* Version:     1.4.8.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -175,6 +175,7 @@
 
         function fnCreateRangeInput(oTable) {
 
+			//var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
             th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
             var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
@@ -320,7 +321,7 @@
             for (j = 0; j < iLen; j++) {
                 if (typeof (aData[j]) != 'object') {
                     var selected = '';
-                    if (escape(aData[j]) == currentFilter) selected = 'selected '
+                    if (escape(aData[j]) == currentFilter || escape(aData[j]) == escape(currentFilter)) selected = 'selected '
                     r += '<option ' + selected + ' value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
                 }
                 else {

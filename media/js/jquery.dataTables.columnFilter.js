@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.4.8.
+* Version:     1.5.0.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -69,7 +69,7 @@
             var asResultData = new Array();
 
             for (var i = 0, c = aiRows.length; i < c; i++) {
-                iRow = aiRows[i];
+                var iRow = aiRows[i];
                 var aData = oTable.fnGetData(iRow);
                 var sValue = aData[iColumn];
 
@@ -393,10 +393,9 @@
             //clean the string
 
             //button label override
+            var labelBtn = label;
             if (properties.sFilterButtonText != null || properties.sFilterButtonText != undefined) {
                 labelBtn = properties.sFilterButtonText;
-            } else {
-                labelBtn = label;
             }
 
             var relativeDivWidthToggleSize = 10;
@@ -559,7 +558,7 @@
 
 
 
-        oTable = this;
+        var oTable = this;
 
         var defaults = {
             sPlaceHolder: "foot",
@@ -569,7 +568,7 @@
             sRangeFormat: "From {from} to {to}"
         };
 
-        properties = $.extend(defaults, options);
+        var properties = $.extend(defaults, options);
 
         return this.each(function () {
 
@@ -577,7 +576,7 @@
                 return;
             asInitVals = new Array();
 
-            aoFilterCells = oTable.fnSettings().aoFooter[0];
+            var aoFilterCells = oTable.fnSettings().aoFooter[0];
 
             var oHost = oTable.fnSettings().nTFoot; //Before fix for ColVis
             var sFilterRow = "tr"; //Before fix for ColVis

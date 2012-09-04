@@ -185,7 +185,7 @@
             var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
-            th.wrapInner('<span class="filterColumn filter_number_range" />');
+            th.wrapInner('<span class="filter_column filter_number_range" />');
             var index = i;
             aiCustomSearch_Indexes.push(i);
 
@@ -253,7 +253,7 @@
             var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
-            th.wrapInner('<span class="filterColumn filter_date_range" />');
+            th.wrapInner('<span class="filter_column filter_date_range" />');
             to.datepicker();
             var index = i;
             aiCustomSearch_Indexes.push(i);
@@ -339,7 +339,7 @@
 
             var select = $(r + '</select>');
             nTh.html(select);
-            nTh.wrapInner('<span class="filterColumn filter_select" />');
+            nTh.wrapInner('<span class="filter_column filter_select" />');
             select.change(function () {
                 //var val = $(this).val();
                 if ($(this).val() != "") {
@@ -439,7 +439,7 @@
 
                 var checkbox = $(r);
                 th.html(checkbox);
-                th.wrapInner('<span class="filterColumn filter_checkbox" />');
+                th.wrapInner('<span class="filter_column filter_checkbox" />');
                 //on every checkbox selection
                 checkbox.change(function () {
 

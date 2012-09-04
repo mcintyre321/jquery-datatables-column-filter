@@ -24,7 +24,7 @@
 $(document).ready(function(){
      $('#example').dataTable()
 		  .columnFilter({
-			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
+			aoColumns: [ { type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman'], selected: 'Misc'  },
 				     { type: "text" },
 				     null,
 				     { type: "number" },

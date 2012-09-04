@@ -309,11 +309,13 @@
 
         }
 
-        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex) {
+        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex, oSelected) {
             if (aData == null)
                 aData = _fnGetColumnValues(oTable.fnSettings(), iColumn, true, false, true);
             var index = iColumn;
             var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+            if (currentFilter == null || currentFilter == "")//Issue 81
+                currentFilter = oSelected;
 
             var r = '<select class="search_init select_filter"><option value="" class="search_init">' + sLabel + '</option>';
             var j = 0;
@@ -321,7 +323,10 @@
             for (j = 0; j < iLen; j++) {
                 if (typeof (aData[j]) != 'object') {
                     var selected = '';
-                    if (escape(aData[j]) == currentFilter || escape(aData[j]) == escape(currentFilter)) selected = 'selected '
+                    if (escape(aData[j]) == currentFilter
+                        || escape(aData[j]) == escape(currentFilter)
+                        )
+                        selected = 'selected '
                     r += '<option ' + selected + ' value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
                 }
                 else {
@@ -353,9 +358,11 @@
                     oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
                 fnOnFiltered();
             });
+            if (currentFilter != null && currentFilter != "")//Issue 81
+                oTable.fnFilter(unescape(currentFilter), iColumn);
         }
 
-        function fnCreateSelect(oTable, aData, bRegex) {
+        function fnCreateSelect(oTable, aData, bRegex, oSelected) {
             var oSettings = oTable.fnSettings();
             if (aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
                 // Add a function to the draw callback, which will check for the Ajax data having 
@@ -367,7 +374,7 @@
                             // Only rebuild the select on the second draw - i.e. when the Ajax
                             // data has been loaded.
                             if (oSettings.iDraw == 2 && oSettings.sAjaxSource != null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
-                                return fnCreateColumnSelect(oTable, null, _fnColumnIndex(iColumn), nTh, sLabel, bRegex); //Issue 37
+                                return fnCreateColumnSelect(oTable, null, _fnColumnIndex(iColumn), nTh, sLabel, bRegex, oSelected); //Issue 37
                             }
                         };
                     })(i, th, label),
@@ -375,7 +382,7 @@
                 });
             }
             // Regardless of the Ajax state, build the select on first pass
-            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label, bRegex); //Issue 37
+            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label, bRegex, oSelected); //Issue 37
 
         }
 
@@ -659,7 +666,7 @@
                         case "select":
                             if (aoColumn.bRegex != true)
                                 aoColumn.bRegex = false;
-                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex);
+                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex, aoColumn.selected);
                             break;
                         case "number-range":
                             fnCreateRangeInput(oTable);

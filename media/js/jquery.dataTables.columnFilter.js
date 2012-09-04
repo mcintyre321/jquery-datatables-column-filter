@@ -243,16 +243,37 @@
 
 
         function fnCreateDateRangeInput(oTable) {
-            th.html(_fnRangeLabelPart(0));
+
+            var aoFragments = sRangeFormat.split(/[}{]/);
+
+            th.html("");
+            //th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
             var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
             from.datepicker();
-            th.append(from);
-            th.append(_fnRangeLabelPart(1));
+            //th.append(from);
+            //th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
             var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
-            th.append(to);
-            th.append(_fnRangeLabelPart(2));
+            //th.append(to);
+            //th.append(_fnRangeLabelPart(2));
+
+            for (ti = 0; ti < aoFragments.length; ti++) {
+
+                if (aoFragments[ti] == properties.sDateFromToken) {
+                    th.append(from);
+                } else {
+                    if (aoFragments[ti] == properties.sDateToToken) {
+                        th.append(to);
+                    } else {
+                        th.append(aoFragments[ti]);
+                    }
+                }
+                
+
+            }
+
+
             th.wrapInner('<span class="filter_column filter_date_range" />');
             to.datepicker();
             var index = i;
@@ -572,7 +593,9 @@
             sRangeSeparator: "~",
             iFilteringDelay: 500,
             aoColumns: null,
-            sRangeFormat: "From {from} to {to}"
+            sRangeFormat: "From {from} to {to}",
+            sDateFromToken: "from",
+            sDateToToken: "to"
         };
 
         var properties = $.extend(defaults, options);

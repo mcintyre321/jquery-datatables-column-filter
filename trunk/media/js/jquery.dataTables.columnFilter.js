@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.0.
+* Version:     1.5.1.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2012 Jovan Popovic, all rights reserved.
@@ -407,6 +407,22 @@
 
         }
 
+		function fnCreateDropdown(aData) {
+			var index = i;
+			var r = '<div class="dropdown select_filter"><a class="dropdown-toggle" data-toggle="dropdown" href="#">' + label + '<b class="caret"></b></a><ul class="dropdown-menu" role="menu"><li data-value=""><a>Show All</a></li>', j, iLen = aData.length;
+
+			for (j = 0; j < iLen; j++) {
+				r += '<li data-value="' + aData[j] + '"><a>' + aData[j] + '</a></li>';
+			}
+			var select = $(r + '</ul></div>');
+			th.html(select);
+			th.wrapInner('<span class="filterColumn filter_select" />');
+			select.find('li').click(function () {
+				oTable.fnFilter($(this).data('value'), index);
+			});
+		}
+		
+		
         function fnCreateCheckbox(oTable, aData) {
 
             if (aData == null)
@@ -699,6 +715,10 @@
                             break;
                         case "checkbox":
                             fnCreateCheckbox(oTable, aoColumn.values);
+                            break;
+						case "twitter-dropdown":
+						case "dropdown":
+                            fnCreateDropdown(aoColumn.values);
                             break;
                         case "text":
                         default:

@@ -1,9 +1,9 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.1.
+* Version:     1.5.2.
 * Author:      Jovan Popovic 
 * 
-* Copyright 2011-2012 Jovan Popovic, all rights reserved.
+* Copyright 2011-2014 Jovan Popovic, all rights reserved.
 *
 * This source file is free software, under either the GPL v2 license or a
 * BSD style license, as supplied with this software.
@@ -112,7 +112,7 @@
                 search_init = '';
             }
 
-            var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '"/>');
+            var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '" rel="' + i + '"/>');
             if (iMaxLenght != undefined && iMaxLenght != -1) {
                 input.attr('maxlength', iMaxLenght);
             }
@@ -338,7 +338,7 @@
             if (currentFilter == null || currentFilter == "")//Issue 81
                 currentFilter = oSelected;
 
-            var r = '<select class="search_init select_filter"><option value="" class="search_init">' + sLabel + '</option>';
+            var r = '<select class="search_init select_filter" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
             var j = 0;
             var iLen = aData.length;
             for (j = 0; j < iLen; j++) {
@@ -467,6 +467,7 @@
             r += '<button id="' + buttonId + '" class="checkbox_filter" > ' + labelBtn + '</button>'; //filter button witch open dialog
             r += '<div id="' + checkToggleDiv + '" '
             	+ 'title="' + label + '" '
+                + 'rel="' + i + '" '
             	+ 'class="toggle-check ui-widget-content ui-corner-all"  style="width: ' + (divWidthToggle) + '%; " >'; //dialog div
             //r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
             r += divRowDef;

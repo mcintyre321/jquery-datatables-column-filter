@@ -36,8 +36,28 @@
 
 		<script type="text/javascript" charset="utf-8">
 			$(document).ready( function () {
-				$('#example').dataTable().columnFilter({ /*sPlaceHolder: "head:after",*/ aoColumns: [
-              {  type: "checkbox", values: null /*[ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Tasman', 'Webkit']*/ },{},{},{},{ type: "checkbox", values: [ 'A', 'B', 'C', 'U', 'X']  } ]});		
+				$('#example')
+					.dataTable()
+					.columnFilter(
+						{ /*sPlaceHolder: "head:after",*/ 
+							aoColumns:
+							[	{  type: "checkbox", values: null /*[ 'Gecko', 'Trident', 'KHTML', 'Misc', 'Presto', 'Tasman', 'Webkit']*/ },
+								{},
+								{},
+								{},
+								{ 
+									type: "checkbox", 
+									values: 
+									[ 
+										{value: 'A', label: 'Grade A' },
+										{value: 'B', label: 'Grade B' },
+										{value: 'C', label: 'Grade C' },
+										'U',
+										'X'
+									]  
+								} 
+							]
+						});		
 			} );
 		</script>
         <script type="text/javascript">

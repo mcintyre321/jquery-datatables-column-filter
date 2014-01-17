@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.2.
+* Version:     1.5.3.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2014 Jovan Popovic, all rights reserved.
@@ -479,8 +479,16 @@
                     r += divClose + divRowDef;
                 }
 
+                var sLabel = aData[j];
+                var sValue = aData[j];
+
+                if (typeof (aData[j]) == 'object') {
+                    sLabel = aData[j].label;
+                    sValue = aData[j].value;
+                }
+
                 //check button
-                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + aData[j] + '" name= "' + localLabel + '" value="' + aData[j] + '" >' + aData[j] + '<br/>';
+                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + uniqueId + '_cb_' + sValue + '" name= "' + localLabel + '" value="' + sValue + '" >' + sLabel + '<br/>';
 
                 var checkbox = $(r);
                 th.html(checkbox);
@@ -506,6 +514,13 @@
 
                     });
 
+
+                    if (search != "") {
+                        $('input:checkbox[name="' + localLabel + '"]').removeClass("search_init");
+                    } else {
+                        $('input:checkbox[name="' + localLabel + '"]').addClass("search_init");
+                    }
+                    /* Old code for setting search_init CSS class on checkboxes if any of them is checked
                     for (var jj = 0; jj < iLen; jj++) {
                         if (search != "") {
                             $('#' + aData[jj]).removeClass("search_init");
@@ -513,6 +528,7 @@
                             $('#' + aData[jj]).addClass("search_init");
                         }
                     }
+                    */
 
                     //execute search
                     oTable.fnFilter(search, index, true, false);

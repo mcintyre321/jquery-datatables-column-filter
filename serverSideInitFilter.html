@@ -41,6 +41,7 @@
 			var oSettings = $dt.fnSettings();
 			oSettings.aoPreSearchCols[ 0 ].sSearch = "Trident";
 			oSettings.aoPreSearchCols[ 1 ].sSearch = "5";
+			oSettings.aoPreSearchCols[ 4 ].sSearch = "C";
 			//$dt.fnDraw();
 			
 			$dt.columnFilter({
@@ -48,13 +49,27 @@
 						{ type: "select", values: [ 'Gecko', 'Trident "New"', 'Trident', 'KHTML', 'Misc', 'Presto', 'Webkit', 'Tasman']  },
 						{ type: "text" },
 						{ type: "text" },
-						{ type: "text" }
+						{ type: "text" },
+						{
+							type: "checkbox",
+							values:
+							[
+								{ value: 'A', label: 'Grade A' },
+								{ value: 'B', label: 'Grade B' },
+								{ value: 'C', label: 'Grade C' },
+								'U',
+								'X'
+							]
+						}
 					]
 			});
 			
 			$("[rel=0]", $dt).val("Trident");
 			$("[rel=1]", $dt).val("5");
-				
+			$("div[rel=4] input[type=checkbox][value=C]")
+				.each(function() {
+					this.checked = true;
+				});
 			} );
 		</script>
         <script type="text/javascript">

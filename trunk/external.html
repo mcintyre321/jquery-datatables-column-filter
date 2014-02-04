@@ -26,7 +26,7 @@
 							.columnFilter({aoColumns:[
 								{ type:"select", sSelector: "#renderingEngineFilter" },
 								{ sSelector: "#browserFilter" },
-								{ sSelector: "#platformsFilter" },
+								{ type:"date-range", sSelector: "#platformsFilter" },
 								{ type:"number-range", sSelector: "#engineVersionFilter" },
 								{ type:"select", values : ["A", "B", "C"], sSelector: "#cssGradeFilter" }
 								]}

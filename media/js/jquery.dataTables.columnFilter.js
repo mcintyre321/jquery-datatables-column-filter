@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.4.
+* Version:     1.5.5.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2014 Jovan Popovic, all rights reserved.
@@ -330,7 +330,7 @@
 
         }
 
-        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex, oSelected) {
+        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex, oSelected, bMultiselect) {
             if (aData == null)
                 aData = _fnGetColumnValues(oTable.fnSettings(), iColumn, true, false, true);
             var index = iColumn;
@@ -339,6 +339,9 @@
                 currentFilter = oSelected;
 
             var r = '<select class="search_init select_filter" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
+			if(bMultiselect) {
+				r = '<select class="search_init select_filter" rel="' + i + ' multiple>';
+			}
             var j = 0;
             var iLen = aData.length;
             for (j = 0; j < iLen; j++) {
@@ -366,24 +369,47 @@
             var select = $(r + '</select>');
             nTh.html(select);
             nTh.wrapInner('<span class="filter_column filter_select" />');
-            select.change(function () {
-                //var val = $(this).val();
-                if ($(this).val() != "") {
-                    $(this).removeClass("search_init");
-                } else {
-                    $(this).addClass("search_init");
-                }
-                if (bRegex)
-                    oTable.fnFilter($(this).val(), iColumn, bRegex); //Issue 41
-                else
-                    oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
-                fnOnFiltered();
-            });
-            if (currentFilter != null && currentFilter != "")//Issue 81
-                oTable.fnFilter(unescape(currentFilter), iColumn);
+			
+			if(bMultiselect) {
+				select.change(function () {
+					if ($(this).val() != "") {
+						$(this).removeClass("search_init");
+					} else {
+						$(this).addClass("search_init");
+					}
+					var selectedOptions = $(this).val();
+					var asEscapedFilters = [];
+					if(selectedOptions==null || selectedOptions==[]){
+						var re = '^(.*)$';
+					}else{
+						$.each( selectedOptions, function( i, sFilter ) {
+							asEscapedFilters.push( fnRegExpEscape( sFilter ) );
+						} );
+						var re = '^(' + asEscapedFilters.join('|') + ')$';
+					}
+					 
+					oTable.fnFilter( re, index, true, false );
+				});
+			} else {
+				select.change(function () {
+					//var val = $(this).val();
+					if ($(this).val() != "") {
+						$(this).removeClass("search_init");
+					} else {
+						$(this).addClass("search_init");
+					}
+					if (bRegex)
+						oTable.fnFilter($(this).val(), iColumn, bRegex); //Issue 41
+					else
+						oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
+					fnOnFiltered();
+				});
+				if (currentFilter != null && currentFilter != "")//Issue 81
+					oTable.fnFilter(unescape(currentFilter), iColumn);
+			}
         }
 
-        function fnCreateSelect(oTable, aData, bRegex, oSelected) {
+        function fnCreateSelect(oTable, aData, bRegex, oSelected, bMultiselect) {
             var oSettings = oTable.fnSettings();
             if ( (aData == null || typeof(aData) == 'function' ) && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
                 // Add a function to the draw callback, which will check for the Ajax data having 
@@ -395,7 +421,7 @@
                             // Only rebuild the select on the second draw - i.e. when the Ajax
                             // data has been loaded.
                             if (oSettings.iDraw == 2 && oSettings.sAjaxSource != null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
-                                return fnCreateColumnSelect(oTable, aData && aData(oSettings.aoData, oSettings), _fnColumnIndex(iColumn), nTh, sLabel, bRegex, oSelected); //Issue 37
+                                return fnCreateColumnSelect(oTable, aData && aData(oSettings.aoData, oSettings), _fnColumnIndex(iColumn), nTh, sLabel, bRegex, oSelected, bMultiselect); //Issue 37
                             }
                         };
                     })(i, th, label),
@@ -403,9 +429,13 @@
                 });
             }
             // Regardless of the Ajax state, build the select on first pass
-            fnCreateColumnSelect(oTable, typeof(aData) == 'function' ? null: aData, _fnColumnIndex(i), th, label, bRegex, oSelected); //Issue 37
+            fnCreateColumnSelect(oTable, typeof(aData) == 'function' ? null: aData, _fnColumnIndex(i), th, label, bRegex, oSelected, bMultiselect); //Issue 37
 
         }
+		 
+		function fnRegExpEscape( sText ) { 
+			return sText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); 
+		};
 
 		function fnCreateDropdown(aData) {
 			var index = i;
@@ -722,7 +752,7 @@
                         case "select":
                             if (aoColumn.bRegex != true)
                                 aoColumn.bRegex = false;
-                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex, aoColumn.selected);
+                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex, aoColumn.selected, aoColumn.multiple);
                             break;
                         case "number-range":
                             fnCreateRangeInput(oTable);

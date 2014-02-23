@@ -340,7 +340,7 @@
 
             var r = '<select class="search_init select_filter" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
 			if(bMultiselect) {
-				r = '<select class="search_init select_filter" rel="' + i + ' multiple>';
+				r = '<select class="search_init select_filter" rel="' + i + '" multiple>';
 			}
             var j = 0;
             var iLen = aData.length;

@@ -28,10 +28,25 @@
                                       
                                     }
                                     ).columnFilter({
-			aoColumns: [ { type: "text" },
+			aoColumns: [ 
+				     { type: "text" },
 				     { type: "text" },
 				     { type: "number-range" },
-				     { type: "select" }
+				     { type: "select",
+					   values: function(aoData, oSettings){
+							var keys = new Array();
+							var values = new Array()
+							for(i=0; i<aoData.length; i++){
+								var item = aoData[i]._aData[3];
+								if(keys[item]==null){
+									keys[item] = true;
+									//values.push(item);
+									values.push({ value: item, label: 'The ' + item});
+								}
+							}
+							return values;
+						}
+						}
 				]
 
 		});

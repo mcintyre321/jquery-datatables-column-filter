@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.3.
+* Version:     1.5.4.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2014 Jovan Popovic, all rights reserved.
@@ -385,17 +385,17 @@
 
         function fnCreateSelect(oTable, aData, bRegex, oSelected) {
             var oSettings = oTable.fnSettings();
-            if (aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+            if ( (aData == null || typeof(aData) == 'function' ) && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
                 // Add a function to the draw callback, which will check for the Ajax data having 
                 // been loaded. Use a closure for the individual column elements that are used to 
                 // built the column filter, since 'i' and 'th' (etc) are locally "global".
                 oSettings.aoDrawCallback.push({
                     "fn": (function (iColumn, nTh, sLabel) {
-                        return function () {
+                        return function (oSettings) {
                             // Only rebuild the select on the second draw - i.e. when the Ajax
                             // data has been loaded.
                             if (oSettings.iDraw == 2 && oSettings.sAjaxSource != null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
-                                return fnCreateColumnSelect(oTable, null, _fnColumnIndex(iColumn), nTh, sLabel, bRegex, oSelected); //Issue 37
+                                return fnCreateColumnSelect(oTable, aData && aData(oSettings.aoData, oSettings), _fnColumnIndex(iColumn), nTh, sLabel, bRegex, oSelected); //Issue 37
                             }
                         };
                     })(i, th, label),
@@ -403,7 +403,7 @@
                 });
             }
             // Regardless of the Ajax state, build the select on first pass
-            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label, bRegex, oSelected); //Issue 37
+            fnCreateColumnSelect(oTable, typeof(aData) == 'function' ? null: aData, _fnColumnIndex(i), th, label, bRegex, oSelected); //Issue 37
 
         }
 

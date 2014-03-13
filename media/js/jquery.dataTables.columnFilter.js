@@ -1,6 +1,6 @@
 ﻿/*
 * File:        jquery.dataTables.columnFilter.js
-* Version:     1.5.5.
+* Version:     1.5.6.
 * Author:      Jovan Popovic 
 * 
 * Copyright 2011-2014 Jovan Popovic, all rights reserved.
@@ -96,9 +96,9 @@
         }
 
         function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength, iMaxLenght) {
-            var sCSSClass = "text_filter";
+            var sCSSClass = "text_filter form-control";
             if (bIsNumber)
-                sCSSClass = "number_filter";
+                sCSSClass = "number_filter form-control";
 
             label = label.replace(/(^\s*)|(\s*$)/g, "");
             var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
@@ -178,14 +178,14 @@
 			//var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
             th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="number_range_filter form-control" id="' + sFromId + '" rel="' + i + '"/>');
             th.append(from);
             th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="number_range_filter form-control" id="' + sToId + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
-            th.wrapInner('<span class="filter_column filter_number_range" />');
+            th.wrapInner('<span class="filter_column filter_number_range form-control" />');
             var index = i;
             aiCustomSearch_Indexes.push(i);
 
@@ -249,12 +249,12 @@
             th.html("");
             //th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="date_range_filter form-control" id="' + sFromId + '" rel="' + i + '"/>');
             from.datepicker();
             //th.append(from);
             //th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="date_range_filter form-control" id="' + sToId + '" rel="' + i + '"/>');
             //th.append(to);
             //th.append(_fnRangeLabelPart(2));
 
@@ -338,9 +338,9 @@
             if (currentFilter == null || currentFilter == "")//Issue 81
                 currentFilter = oSelected;
 
-            var r = '<select class="search_init select_filter" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
+            var r = '<select class="search_init select_filter form-control" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
 			if(bMultiselect) {
-				r = '<select class="search_init select_filter" rel="' + i + '" multiple>';
+				r = '<select class="search_init select_filter form-control" rel="' + i + '" multiple>';
 			}
             var j = 0;
             var iLen = aData.length;
@@ -439,7 +439,7 @@
 
 		function fnCreateDropdown(aData) {
 			var index = i;
-			var r = '<div class="dropdown select_filter"><a class="dropdown-toggle" data-toggle="dropdown" href="#">' + label + '<b class="caret"></b></a><ul class="dropdown-menu" role="menu"><li data-value=""><a>Show All</a></li>', j, iLen = aData.length;
+			var r = '<div class="dropdown select_filter form-control"><a class="dropdown-toggle" data-toggle="dropdown" href="#">' + label + '<b class="caret"></b></a><ul class="dropdown-menu" role="menu"><li data-value=""><a>Show All</a></li>', j, iLen = aData.length;
 
 			for (j = 0; j < iLen; j++) {
 				r += '<li data-value="' + aData[j] + '"><a>' + aData[j] + '</a></li>';
@@ -494,7 +494,7 @@
             var uniqueId = oTable.attr("id") + localLabel;
             var buttonId = "chkBtnOpen" + uniqueId;
             var checkToggleDiv = uniqueId + "-flt-toggle";
-            r += '<button id="' + buttonId + '" class="checkbox_filter" > ' + labelBtn + '</button>'; //filter button witch open dialog
+            r += '<button id="' + buttonId + '" class="checkbox_filter btn btn-default" > ' + labelBtn + '</button>'; //filter button witch open dialog
             r += '<div id="' + checkToggleDiv + '" '
             	+ 'title="' + label + '" '
                 + 'rel="' + i + '" '
@@ -518,7 +518,7 @@
                 }
 
                 //check button
-                r += '<input class="search_init checkbox_filter" type="checkbox" id= "' + uniqueId + '_cb_' + sValue + '" name= "' + localLabel + '" value="' + sValue + '" >' + sLabel + '<br/>';
+                r += '<input class="search_init checkbox_filter btn btn-default" type="checkbox" id= "' + uniqueId + '_cb_' + sValue + '" name= "' + localLabel + '" value="' + sValue + '" >' + sLabel + '<br/>';
 
                 var checkbox = $(r);
                 th.html(checkbox);

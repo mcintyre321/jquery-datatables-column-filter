@@ -33,7 +33,8 @@
 
         var oFunctionTimeout = null;
 
-        var fnOnFiltered = function () { };
+        var fnOnFiltered = function () {
+        };
 
         function _fnGetColumnValues(oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty) {
             ///<summary>
@@ -62,7 +63,7 @@
 
             // use only filtered rows
             if (bFiltered == true) aiRows = oSettings.aiDisplay;
-            // use all rows
+                // use all rows
             else aiRows = oSettings.aiDisplayMaster; // all row numbers
 
             // set up data array	
@@ -76,10 +77,10 @@
                 // ignore empty values?
                 if (bIgnoreEmpty == true && sValue.length == 0) continue;
 
-                // ignore unique values?
+                    // ignore unique values?
                 else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
 
-                // else push the value onto the result data array
+                    // else push the value onto the result data array
                 else asResultData.push(sValue);
             }
 
@@ -143,12 +144,11 @@
                             iLastFilterLength = 0;
                         var iCurrentFilterLength = this.value.length;
                         if (Math.abs(iCurrentFilterLength - iLastFilterLength) < iFilterLength
-                        //&& currentFilter.length == 0 //Why this?
-					        ) {
+                            //&& currentFilter.length == 0 //Why this?
+                        ) {
                             //Cancel the filtering
                             return;
-                        }
-                        else {
+                        } else {
                             //Remember the current filter length
                             $(this).data("dt-iLastFilterLength", iCurrentFilterLength);
                         }
@@ -174,21 +174,30 @@
         }
 
         function fnCreateRangeInput(oTable) {
+            var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+            var fromDatePre = '';
+            var toDatePre = '';
+            if (currentFilter != '' && currentFilter != 'undefined') {
+                var arrDates = currentFilter.split("~");
+                fromDatePre = arrDates[0];
+                toDatePre = arrDates[1];
+            }
 
-			//var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+
+            //var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
             th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="number_range_filter form-control" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="number_range_filter form-control" id="' + sFromId + '"  value = "' + fromDatePre + '" rel="' + i + '"/>')
+            ;
             th.append(from);
             th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="number_range_filter form-control" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="number_range_filter form-control" id="' + sToId + '" value="' + toDatePre + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
             th.wrapInner('<span class="filter_column filter_number_range form-control" />');
             var index = i;
             aiCustomSearch_Indexes.push(i);
-
 
 
             //------------start range filtering function
@@ -199,32 +208,28 @@
             */
             //$.fn.dataTableExt.afnFiltering.push(
             oTable.dataTableExt.afnFiltering.push(
-	        function (oSettings, aData, iDataIndex) {
-	            if (oTable.attr("id") != oSettings.sTableId)
-	                return true;
-	            // Try to handle missing nodes more gracefully
-	            if (document.getElementById(sFromId) == null)
-	                return true;
-	            var iMin = document.getElementById(sFromId).value * 1;
-	            var iMax = document.getElementById(sToId).value * 1;
-	            var iValue = aData[_fnColumnIndex(index)] == "-" ? 0 : aData[_fnColumnIndex(index)] * 1;
-	            if (iMin == "" && iMax == "") {
-	                return true;
-	            }
-	            else if (iMin == "" && iValue <= iMax) {
-	                return true;
-	            }
-	            else if (iMin <= iValue && "" == iMax) {
-	                return true;
-	            }
-	            else if (iMin <= iValue && iValue <= iMax) {
-	                return true;
-	            }
-	            return false;
-	        }
-        );
+                function (oSettings, aData, iDataIndex) {
+                    if (oTable.attr("id") != oSettings.sTableId)
+                        return true;
+                    // Try to handle missing nodes more gracefully
+                    if (document.getElementById(sFromId) == null)
+                        return true;
+                    var iMin = document.getElementById(sFromId).value * 1;
+                    var iMax = document.getElementById(sToId).value * 1;
+                    var iValue = aData[_fnColumnIndex(index)] == "-" ? 0 : aData[_fnColumnIndex(index)] * 1;
+                    if (iMin == "" && iMax == "") {
+                        return true;
+                    } else if (iMin == "" && iValue <= iMax) {
+                        return true;
+                    } else if (iMin <= iValue && "" == iMax) {
+                        return true;
+                    } else if (iMin <= iValue && iValue <= iMax) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
             //------------end range filtering function
-
 
 
             $('#' + sFromId + ',#' + sToId, th).keyup(function () {
@@ -243,18 +248,26 @@
 
 
         function fnCreateDateRangeInput(oTable) {
+            var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+            var fromDatePre = '';
+            var toDatePre = '';
+            if (currentFilter != '' && currentFilter != 'undefined') {
+                var arrDates = currentFilter.split("~");
+                fromDatePre = arrDates[0];
+                toDatePre = arrDates[1];
+            }
 
             var aoFragments = sRangeFormat.split(/[}{]/);
 
             th.html("");
             //th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="date_range_filter form-control" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="date_range_filter form-control" id="' + sFromId + '" value="' + fromDatePre + '" rel="' + i + '"/>');
             from.datepicker();
             //th.append(from);
             //th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="date_range_filter form-control" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="date_range_filter form-control" id="' + sToId + '" value="' + toDatePre + '" rel="' + i + '"/>');
             //th.append(to);
             //th.append(_fnRangeLabelPart(2));
 
@@ -269,7 +282,7 @@
                         th.append(aoFragments[ti]);
                     }
                 }
-                
+
 
             }
 
@@ -284,42 +297,40 @@
 
             //$.fn.dataTableExt.afnFiltering.push(
             oTable.dataTableExt.afnFiltering.push(
-	        function (oSettings, aData, iDataIndex) {
-	            if (oTable.attr("id") != oSettings.sTableId)
-	                return true;
+                function (oSettings, aData, iDataIndex) {
+                    if (oTable.attr("id") != oSettings.sTableId)
+                        return true;
 
-	            var dStartDate = from.datepicker("getDate");
+                    var dStartDate = from.datepicker("getDate");
 
-	            var dEndDate = to.datepicker("getDate");
+                    var dEndDate = to.datepicker("getDate");
 
-	            if (dStartDate == null && dEndDate == null) {
-	                return true;
-	            }
+                    if (dStartDate == null && dEndDate == null) {
+                        return true;
+                    }
 
-	            var dCellDate = null;
-	            try {
-	                if (aData[_fnColumnIndex(index)] == null || aData[_fnColumnIndex(index)] == "")
-	                    return false;
-	                dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[_fnColumnIndex(index)]);
-	            } catch (ex) {
-	                return false;
-	            }
-	            if (dCellDate == null)
-	                return false;
+                    var dCellDate = null;
+                    try {
+                        if (aData[_fnColumnIndex(index)] == null || aData[_fnColumnIndex(index)] == "")
+                            return false;
+                        dCellDate = $.datepicker.parseDate($.datepicker.regional[""].dateFormat, aData[_fnColumnIndex(index)]);
+                    } catch (ex) {
+                        return false;
+                    }
+                    if (dCellDate == null)
+                        return false;
 
 
-	            if (dStartDate == null && dCellDate <= dEndDate) {
-	                return true;
-	            }
-	            else if (dStartDate <= dCellDate && dEndDate == null) {
-	                return true;
-	            }
-	            else if (dStartDate <= dCellDate && dCellDate <= dEndDate) {
-	                return true;
-	            }
-	            return false;
-	        }
-        );
+                    if (dStartDate == null && dCellDate <= dEndDate) {
+                        return true;
+                    } else if (dStartDate <= dCellDate && dEndDate == null) {
+                        return true;
+                    } else if (dStartDate <= dCellDate && dCellDate <= dEndDate) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
             //------------end date range filtering function
 
             $('#' + sFromId + ',#' + sToId, th).change(function () {
@@ -339,22 +350,24 @@
                 currentFilter = oSelected;
 
             var r = '<select class="search_init select_filter form-control" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
-			if(bMultiselect) {
-				r = '<select class="search_init select_filter form-control" rel="' + i + '" multiple>';
-			}
+            if (bMultiselect) {
+                r = '<select class="search_init select_filter form-control" rel="' + i + '" multiple>';
+            }
             var j = 0;
             var iLen = aData.length;
             for (j = 0; j < iLen; j++) {
                 if (typeof (aData[j]) != 'object') {
                     var selected = '';
                     if (escape(aData[j]) == currentFilter
-                        || escape(aData[j]) == escape(currentFilter)
-                        )
+                        || escape(aData[j]) == escape(currentFilter))
                         selected = 'selected '
                     r += '<option ' + selected + ' value="' + escape(aData[j]) + '">' + aData[j] + '</option>';
-                }
-                else {
+                } else {
                     var selected = '';
+                    //HMif (("^" + escape(aData[j]) + "$") == currentFilter) selected = 'selected '
+                    //HMr += '<option ' + selected + 'value="' + escape(aData[j].value + "$") + '">' + aData[j].label + '</option>';
+
+
                     if (bRegex) {
                         //Do not escape values if they are explicitely set to avoid escaping special characters in the regexp
                         if (aData[j].value == currentFilter) selected = 'selected ';
@@ -369,49 +382,49 @@
             var select = $(r + '</select>');
             nTh.html(select);
             nTh.wrapInner('<span class="filter_column filter_select" />');
-			
-			if(bMultiselect) {
-				select.change(function () {
-					if ($(this).val() != "") {
-						$(this).removeClass("search_init");
-					} else {
-						$(this).addClass("search_init");
-					}
-					var selectedOptions = $(this).val();
-					var asEscapedFilters = [];
-					if(selectedOptions==null || selectedOptions==[]){
-						var re = '^(.*)$';
-					}else{
-						$.each( selectedOptions, function( i, sFilter ) {
-							asEscapedFilters.push( fnRegExpEscape( sFilter ) );
-						} );
-						var re = '^(' + asEscapedFilters.join('|') + ')$';
-					}
-					 
-					oTable.fnFilter( re, index, true, false );
-				});
-			} else {
-				select.change(function () {
-					//var val = $(this).val();
-					if ($(this).val() != "") {
-						$(this).removeClass("search_init");
-					} else {
-						$(this).addClass("search_init");
-					}
-					if (bRegex)
-						oTable.fnFilter($(this).val(), iColumn, bRegex); //Issue 41
-					else
-						oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
-					fnOnFiltered();
-				});
-				if (currentFilter != null && currentFilter != "")//Issue 81
-					oTable.fnFilter(unescape(currentFilter), iColumn);
-			}
+
+            if (bMultiselect) {
+                select.change(function () {
+                    if ($(this).val() != "") {
+                        $(this).removeClass("search_init");
+                    } else {
+                        $(this).addClass("search_init");
+                    }
+                    var selectedOptions = $(this).val();
+                    var asEscapedFilters = [];
+                    if (selectedOptions == null || selectedOptions == []) {
+                        var re = '^(.*)$';
+                    } else {
+                        $.each(selectedOptions, function (i, sFilter) {
+                            asEscapedFilters.push(fnRegExpEscape(sFilter));
+                        });
+                        var re = '^(' + asEscapedFilters.join('|') + ')$';
+                    }
+
+                    oTable.fnFilter(re, index, true, false);
+                });
+            } else {
+                select.change(function () {
+                    //var val = $(this).val();
+                    if ($(this).val() != "") {
+                        $(this).removeClass("search_init");
+                    } else {
+                        $(this).addClass("search_init");
+                    }
+                    if (bRegex)
+                        oTable.fnFilter($(this).val(), iColumn, bRegex); //Issue 41
+                    else
+                        oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
+                    fnOnFiltered();
+                });
+                if (currentFilter != null && currentFilter != "")//Issue 81
+                    oTable.fnFilter(unescape(currentFilter), iColumn);
+            }
         }
 
         function fnCreateSelect(oTable, aData, bRegex, oSelected, bMultiselect) {
             var oSettings = oTable.fnSettings();
-            if ( (aData == null || typeof(aData) == 'function' ) && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
+            if ((aData == null || typeof (aData) == 'function') && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
                 // Add a function to the draw callback, which will check for the Ajax data having 
                 // been loaded. Use a closure for the individual column elements that are used to 
                 // built the column filter, since 'i' and 'th' (etc) are locally "global".
@@ -429,30 +442,32 @@
                 });
             }
             // Regardless of the Ajax state, build the select on first pass
-            fnCreateColumnSelect(oTable, typeof(aData) == 'function' ? null: aData, _fnColumnIndex(i), th, label, bRegex, oSelected, bMultiselect); //Issue 37
+            fnCreateColumnSelect(oTable, typeof (aData) == 'function' ? null : aData, _fnColumnIndex(i), th, label, bRegex, oSelected, bMultiselect); //Issue 37
 
         }
-		 
-		function fnRegExpEscape( sText ) { 
-			return sText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"); 
-		};
 
-		function fnCreateDropdown(aData) {
-			var index = i;
-			var r = '<div class="dropdown select_filter form-control"><a class="dropdown-toggle" data-toggle="dropdown" href="#">' + label + '<b class="caret"></b></a><ul class="dropdown-menu" role="menu"><li data-value=""><a>Show All</a></li>', j, iLen = aData.length;
+        function fnRegExpEscape(sText) {
+            return sText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        }
 
-			for (j = 0; j < iLen; j++) {
-				r += '<li data-value="' + aData[j] + '"><a>' + aData[j] + '</a></li>';
-			}
-			var select = $(r + '</ul></div>');
-			th.html(select);
-			th.wrapInner('<span class="filterColumn filter_select" />');
-			select.find('li').click(function () {
-				oTable.fnFilter($(this).data('value'), index);
-			});
-		}
-		
-		
+        ;
+
+        function fnCreateDropdown(aData) {
+            var index = i;
+            var r = '<div class="dropdown select_filter form-control"><a class="dropdown-toggle" data-toggle="dropdown" href="#">' + label + '<b class="caret"></b></a><ul class="dropdown-menu" role="menu"><li data-value=""><a>Show All</a></li>', j, iLen = aData.length;
+
+            for (j = 0; j < iLen; j++) {
+                r += '<li data-value="' + aData[j] + '"><a>' + aData[j] + '</a></li>';
+            }
+            var select = $(r + '</ul></div>');
+            th.html(select);
+            th.wrapInner('<span class="filterColumn filter_select" />');
+            select.find('li').click(function () {
+                oTable.fnFilter($(this).data('value'), index);
+            });
+        }
+
+
         function fnCreateCheckbox(oTable, aData) {
 
             if (aData == null)
@@ -477,7 +492,8 @@
             var numCol = Math.floor(iLen / numRow);
             if (iLen % numRow > 0) {
                 numCol = numCol + 1;
-            };
+            }
+            ;
 
             //count how many column should be generated and split the div size
             var divWidth = 100 / numCol - 2;
@@ -496,19 +512,22 @@
             var checkToggleDiv = uniqueId + "-flt-toggle";
             r += '<button id="' + buttonId + '" class="checkbox_filter btn btn-default" > ' + labelBtn + '</button>'; //filter button witch open dialog
             r += '<div id="' + checkToggleDiv + '" '
-            	+ 'title="' + label + '" '
+                + 'title="' + label + '" '
                 + 'rel="' + i + '" '
-            	+ 'class="toggle-check ui-widget-content ui-corner-all"  style="width: ' + (divWidthToggle) + '%; " >'; //dialog div
+                + 'class="toggle-check ui-widget-content ui-corner-all"  style="width: ' + (divWidthToggle) + '%; " >'; //dialog div
             //r+= '<div align="center" style="margin-top: 5px; "> <button id="'+buttonId+'Reset" class="checkbox_filter" > reset </button> </div>'; //reset button and its div
             r += divRowDef;
 
+            var storedValues = oTable.fnSettings().aoPreSearchCols[i].sSearch;
+
+            var previousValues = storedValues ? storedValues.split("|") : [];
             for (j = 0; j < iLen; j++) {
 
                 //if last check close div
                 if (j % numRow == 0 && j != 0) {
                     r += divClose + divRowDef;
                 }
-
+                var checked = $.inArray(aData[j], previousValues) > -1;
                 var sLabel = aData[j];
                 var sValue = aData[j];
 
@@ -518,7 +537,7 @@
                 }
 
                 //check button
-                r += '<input class="search_init checkbox_filter btn btn-default" type="checkbox" id= "' + uniqueId + '_cb_' + sValue + '" name= "' + localLabel + '" value="' + sValue + '" >' + sLabel + '<br/>';
+                r += '<input class="search_init checkbox_filter btn btn-default" type="checkbox" id= "' + uniqueId + '_cb_' + sValue + '" name= "' + localLabel + '" ' + (checked ? ' checked = "checked"' : '') + ' value="' + sValue + '" >' + sLabel + '<br/>';
 
                 var checkbox = $(r);
                 th.html(checkbox);
@@ -534,7 +553,7 @@
                         //search = search + ' ' + $(this).val();
                         //concatenation for selected checks in or
                         if ((index == 0 && resSize == 1)
-                				|| (index != 0 && index == resSize - 1)) {
+                            || (index != 0 && index == resSize - 1)) {
                             or = '';
                         }
                         //trim
@@ -587,11 +606,11 @@
                         return false;
                     }
                 },
-							{
-							    text: "Close",
-							    click: function () { $(this).dialog("close"); }
-							}
-						]
+                    {
+                        text: "Close",
+                        click: function () { $(this).dialog("close"); }
+                    }
+                ]
             });
 
 
@@ -599,7 +618,8 @@
 
                 $('#' + checkToggleDiv).dialog('open');
                 var target = $(this);
-                $('#' + checkToggleDiv).dialog("widget").position({ my: 'top',
+                $('#' + checkToggleDiv).dialog("widget").position({
+                    my: 'top',
                     at: 'bottom',
                     of: target
                 });
@@ -611,7 +631,8 @@
 
             fnOnFiltered = function () {
                 var target = $('#' + buttonId);
-                $('#' + checkToggleDiv).dialog("widget").position({ my: 'top',
+                $('#' + checkToggleDiv).dialog("widget").position({
+                    my: 'top',
                     at: 'bottom',
                     of: target
                 });
@@ -633,8 +654,6 @@
         }
 
 
-
-
         function _fnRangeLabelPart(iPlace) {
             switch (iPlace) {
                 case 0:
@@ -645,8 +664,6 @@
                     return sRangeFormat.substring(sRangeFormat.indexOf("{to}") + 4);
             }
         }
-
-
 
 
         var oTable = this;
@@ -681,8 +698,7 @@
                     tr.prependTo($(oTable.fnSettings().nTHead));
                     //tr.appendTo($("thead", oTable));
                     aoFilterCells = oTable.fnSettings().aoHeader[1];
-                }
-                else {
+                } else {
                     tr.appendTo($(oTable.fnSettings().nTHead));
                     //tr.prependTo($("thead", oTable));
                     aoFilterCells = oTable.fnSettings().aoHeader[0];
@@ -709,13 +725,14 @@
 
                 oHost = oTable.fnSettings().nTHead;
 
-                
+
             }
 
             //$(sFilterRow + " th", oHost).each(function (index) {//bug with ColVis
-            $(aoFilterCells).each(function (index) {//fix for ColVis
+            $(aoFilterCells).each(function (index) { //fix for ColVis
                 i = index;
-                var aoColumn = { type: "text",
+                var aoColumn = {
+                    type: "text",
                     bRegex: false,
                     bSmart: true,
                     iMaxLenght: -1,
@@ -731,12 +748,13 @@
                 if (aoColumn.sSelector == null) {
                     //th = $($(this)[0]);//Before fix for ColVis
                     th = $($(this)[0].cell); //Fix for ColVis
-                }
-                else {
+                } else {
                     th = $(aoColumn.sSelector);
                     if (th.length == 0)
                         th = $($(this)[0].cell);
                 }
+                //HMlabel = th.text(); //"Search by " + $(this).text();
+
 
                 if (aoColumn != null) {
                     if (aoColumn.sRangeFormat != null)
@@ -763,8 +781,8 @@
                         case "checkbox":
                             fnCreateCheckbox(oTable, aoColumn.values);
                             break;
-						case "twitter-dropdown":
-						case "dropdown":
+                        case "twitter-dropdown":
+                        case "dropdown":
                             fnCreateDropdown(aoColumn.values);
                             break;
                         case "text":
@@ -773,7 +791,6 @@
                             bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
                             fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength, aoColumn.iMaxLenght);
                             break;
-
                     }
                 }
             });
@@ -797,8 +814,11 @@
                         var index = aiCustomSearch_Indexes[j];
 
                         for (k = 0; k < aoData.length; k++) {
-                            if (aoData[k].name == "sSearch_" + index)
+                            if (aoData[k].name == "sSearch_" + index) {
                                 aoData[k].value = afnSearch_[j]();
+                                //HM// Added this line to force the value in
+                                oTable.fnSettings().aoPreSearchCols[index].sSearch = aoData[k].value;
+                            }
                         }
                     }
                     aoData.push({ "name": "sRangeSeparator", "value": properties.sRangeSeparator });
@@ -809,18 +829,14 @@
                         } catch (ex) {
                             fnServerDataOriginal(sSource, aoData, fnCallback);
                         }
-                    }
-                    else {
+                    } else {
                         $.getJSON(sSource, aoData, function (json) {
                             fnCallback(json)
                         });
                     }
                 };
-
             }
-
         });
-
     };
 
 

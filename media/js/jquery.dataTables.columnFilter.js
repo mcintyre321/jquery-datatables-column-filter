@@ -20,6 +20,16 @@
 */
 (function($) {
 
+    function tog(v) { return v ? 'addClass' : 'removeClass'; }
+
+    $(document).on('input change', 'table.dataTable thead input[type=text]', function () {
+        $(this)[tog(this.value && !$(this).hasClass("search_init"))]('x');
+    }).on('mousemove', '.x', function (e) {
+        $(this)[tog(this.offsetWidth - 18 < e.clientX - this.getBoundingClientRect().left)]('onX');
+    }).on('click', '.onX', function () {
+        $(this).removeClass('x onX').val('').trigger("input").trigger("change");
+    });
+
     var Delayer = (function () {
         var timer = 0;
         return function (callback, ms) {
@@ -111,7 +121,7 @@
             label = label.replace(/(^\s*)|(\s*$)/g, "");
             var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
             var search_init = 'search_init ';
-            var inputvalue = label;
+            var inputvalue = "";
             if (currentFilter != '' && currentFilter != '^') {
                 if (bIsNumber && currentFilter.charAt(0) == '^')
                     inputvalue = currentFilter.substr(1); //ignore trailing ^
@@ -120,7 +130,9 @@
                 search_init = '';
             }
 
-            var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '" rel="' + i + '"/>');
+            var input = $('<input type="text" class="' + search_init + sCSSClass + '" rel="' + i + '"/>')
+                .val(inputvalue)
+                .attr("placeholder", label);
             if (iMaxLenght != undefined && iMaxLenght != -1) {
                 input.attr('maxlength', iMaxLenght);
             }
@@ -135,7 +147,7 @@
 
             if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
                 var delayer = new Delayer();
-                input.keyup(function() {
+                input.on("input", function() {
                     var that = this;
                     delayer.delay(function() {
                         /* Filter on the column all numbers that starts with the entered value */
@@ -145,7 +157,7 @@
                 });
             } else {
                 var delayer = new Delayer();
-                input.keyup(function() {
+                input.on("input", function() {
                     var that = this;
                     delayer(function() {
                         if (oTable.fnSettings().oFeatures.bServerSide && iFilterLength != 0) {
@@ -246,7 +258,7 @@
             //------------end range filtering function
 
             var delay = new Delayer();
-            $('#' + sFromId + ',#' + sToId, th).keyup(function() {
+            $('#' + sFromId + ',#' + sToId, th).on("input", function() {
                 delay(function() {
                     var iMin = document.getElementById(sFromId).value * 1;
                     var iMax = document.getElementById(sToId).value * 1;
@@ -850,7 +862,7 @@
                 };
             }
            
-
+            $('table.dataTable thead input[type=text]').trigger("input")
         });
 
       

@@ -20,6 +20,14 @@
 */
 (function($) {
 
+    var Delayer = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    });
+
 
     $.fn.columnFilter = function(options) {
         var columnBuilders = $.merge({}, options.columnBuilders || {});
@@ -126,35 +134,43 @@
             var index = i;
 
             if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
+                var delayer = new Delayer();
                 input.keyup(function() {
-                    /* Filter on the column all numbers that starts with the entered value */
-                    oTable.fnFilter('^' + this.value, _fnColumnIndex(index), true, false); //Issue 37
-                    fnOnFiltered();
+                    var that = this;
+                    delayer.delay(function() {
+                        /* Filter on the column all numbers that starts with the entered value */
+                        oTable.fnFilter('^' + that.value, _fnColumnIndex(index), true, false); //Issue 37
+                        fnOnFiltered();
+                    }, properties.iFilteringDelay);
                 });
             } else {
+                var delayer = new Delayer();
                 input.keyup(function() {
-                    if (oTable.fnSettings().oFeatures.bServerSide && iFilterLength != 0) {
-                        //If filter length is set in the server-side processing mode
-                        //Check has the user entered at least iFilterLength new characters
+                    var that = this;
+                    delayer(function() {
+                        if (oTable.fnSettings().oFeatures.bServerSide && iFilterLength != 0) {
+                            //If filter length is set in the server-side processing mode
+                            //Check has the user entered at least iFilterLength new characters
 
-                        var currentFilter = oTable.fnSettings().aoPreSearchCols[index].sSearch;
-                        var iLastFilterLength = $(this).data("dt-iLastFilterLength");
-                        if (typeof iLastFilterLength == "undefined")
-                            iLastFilterLength = 0;
-                        var iCurrentFilterLength = this.value.length;
-                        if (Math.abs(iCurrentFilterLength - iLastFilterLength) < iFilterLength
-                            //&& currentFilter.length == 0 //Why this?
-                        ) {
-                            //Cancel the filtering
-                            return;
-                        } else {
-                            //Remember the current filter length
-                            $(this).data("dt-iLastFilterLength", iCurrentFilterLength);
+                            var currentFilter = oTable.fnSettings().aoPreSearchCols[index].sSearch;
+                            var iLastFilterLength = $(that).data("dt-iLastFilterLength");
+                            if (typeof iLastFilterLength == "undefined")
+                                iLastFilterLength = 0;
+                            var iCurrentFilterLength = that.value.length;
+                            if (Math.abs(iCurrentFilterLength - iLastFilterLength) < iFilterLength
+                                //&& currentFilter.length == 0 //Why this?
+                            ) {
+                                //Cancel the filtering
+                                return;
+                            } else {
+                                //Remember the current filter length
+                                $(that).data("dt-iLastFilterLength", iCurrentFilterLength);
+                            }
                         }
-                    }
-                    /* Filter on the column (the index) of this element */
-                    oTable.fnFilter(this.value, _fnColumnIndex(index), regex, smart); //Issue 37
-                    fnOnFiltered();
+                        /* Filter on the column (the index) of this element */
+                        oTable.fnFilter(that.value, _fnColumnIndex(index), regex, smart); //Issue 37
+                        fnOnFiltered();
+                    }, properties.iFilteringDelay);
                 });
             }
 
@@ -229,19 +245,18 @@
             );
             //------------end range filtering function
 
-
+            var delay = new Delayer();
             $('#' + sFromId + ',#' + sToId, th).keyup(function() {
+                delay(function() {
+                    var iMin = document.getElementById(sFromId).value * 1;
+                    var iMax = document.getElementById(sToId).value * 1;
+                    if (iMin != 0 && iMax != 0 && iMin > iMax)
+                        return;
 
-                var iMin = document.getElementById(sFromId).value * 1;
-                var iMax = document.getElementById(sToId).value * 1;
-                if (iMin != 0 && iMax != 0 && iMin > iMax)
-                    return;
-
-                oTable.fnDraw();
-                fnOnFiltered();
+                    oTable.fnDraw();
+                    fnOnFiltered();
+                }, properties.iFilteringDelay);
             });
-
-
         }
 
 
@@ -332,10 +347,12 @@
                 }
             );
             //------------end date range filtering function
-
+            var delayer = new Delayer()
             $('#' + sFromId + ',#' + sToId, th).change(function() {
-                oTable.fnDraw();
-                fnOnFiltered();
+                delayer(function() {
+                    oTable.fnDraw();
+                    fnOnFiltered();
+                }, properties.iFilteringDelay);
             });
 
 

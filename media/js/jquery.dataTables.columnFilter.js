@@ -147,7 +147,7 @@
 
             if (bIsNumber && !oTable.fnSettings().oFeatures.bServerSide) {
                 var delayer = new Delayer();
-                input.on("input", function() {
+                input.on("input", function () {                    
                     var that = this;
                     delayer.delay(function() {
                         /* Filter on the column all numbers that starts with the entered value */
@@ -258,7 +258,7 @@
             //------------end range filtering function
 
             var delay = new Delayer();
-            $('#' + sFromId + ',#' + sToId, th).on("input", function() {
+            $('#' + sFromId + ',#' + sToId, th).on("input", function () {
                 delay(function() {
                     var iMin = document.getElementById(sFromId).value * 1;
                     var iMax = document.getElementById(sToId).value * 1;
@@ -446,8 +446,8 @@
                         oTable.fnFilter(unescape($(this).val()), iColumn); //Issue 25
                     fnOnFiltered();
                 });
-                if (currentFilter != null && currentFilter != "") //Issue 81
-                    oTable.fnFilter(unescape(currentFilter), iColumn);
+//                if (currentFilter != null && currentFilter != "") //Issue 81
+//                    oTable.fnFilter(unescape(currentFilter), iColumn);
             }
         }
 
@@ -862,7 +862,7 @@
                 };
             }
            
-            $('table.dataTable thead input[type=text]').trigger("input")
+//            $('table.dataTable thead input[type=text]').trigger("input")
         });
 
       

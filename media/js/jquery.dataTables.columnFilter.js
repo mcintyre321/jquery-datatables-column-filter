@@ -114,9 +114,9 @@
         }
 
         function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength, iMaxLenght) {
-            var sCSSClass = "text_filter form-control";
+            var sCssClass = "text_filter form-control";
             if (bIsNumber)
-                sCSSClass = "number_filter form-control";
+                sCssClass = "number_filter form-control";
 
             label = label.replace(/(^\s*)|(\s*$)/g, "");
             var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
@@ -130,7 +130,7 @@
                 search_init = '';
             }
 
-            var input = $('<input type="text" class="' + search_init + sCSSClass + '" rel="' + i + '"/>')
+            var input = $('<input type="text" class="' + search_init + sCssClass + '" rel="' + i + '"/>')
                 .val(inputvalue)
                 .attr("placeholder", label);
             if (iMaxLenght != undefined && iMaxLenght != -1) {
@@ -221,7 +221,7 @@
             var to = $('<input type="text" class="number_range_filter form-control" id="' + sToId + '" value="' + toDatePre + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
-            th.wrapInner('<span class="filter_column filter_number_range form-control" />');
+            th.wrapInner('<span class="filter_column filter_number_range" />');
             var index = i;
             aiCustomSearch_Indexes.push(i);
 
